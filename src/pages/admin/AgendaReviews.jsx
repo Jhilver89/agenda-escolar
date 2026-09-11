@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { jsPDF } from 'jspdf'
 import { supabase } from '../../lib/supabase'
 
 function AgendaReviews() {
@@ -338,6 +339,156 @@ function AgendaReviews() {
       month: 'long',
       year: 'numeric',
     })
+  }
+
+  function descargarReportePDF() {
+    if (!diaSeleccionado) {
+      alert('Primero selecciona un día de revisión.')
+      return
+    }
+
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+    const margen = 15
+    const anchoPagina = 210
+    const anchoContenido = anchoPagina - margen * 2
+
+    const fecha = formatearFechaCompleta(diaSeleccionado.review_date)
+    const firmadas = totalFirmadas
+    const noPresentaron = totalNoPresentaron
+    const sinFirma = reviews.filter((review) => review.status === 'no_signature').length
+    const otros = reviews.filter((review) => review.status === 'other').length
+    const porcentaje = totalEstudiantes > 0
+      ? Math.round((firmadas / totalEstudiantes) * 100)
+      : 0
+
+    const estadoTexto = (status) => {
+      if (status === 'signed') return 'FIRMADA'
+      if (status === 'not_present') return 'NO PRESENTÓ'
+      if (status === 'no_signature') return 'SIN FIRMA'
+      if (status === 'other') return 'OTRO'
+      return 'PENDIENTE'
+    }
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(16)
+    doc.text('COLEGIO VANCOUVER', anchoPagina / 2, 18, { align: 'center' })
+
+    doc.setFontSize(12)
+    doc.text('REPORTE DE REVISIÓN DE AGENDAS', anchoPagina / 2, 26, { align: 'center' })
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(`Grado: ${gradoSeleccionado?.name || '-'}`, margen, 38)
+    doc.text(`Sección: ${seccionSeleccionada?.name || '-'}`, margen, 44)
+    doc.text(`Período: ${periodoSeleccionado?.name || '-'} - ${periodoSeleccionado?.year || '-'}`, margen, 50)
+    doc.text(`Fecha: ${fecha}`, margen, 56)
+
+    const statsY = 64
+    const statWidth = anchoContenido / 4
+    const stats = [
+      ['ESTUDIANTES', totalEstudiantes],
+      ['FIRMADAS', firmadas],
+      ['NO PRESENTÓ', noPresentaron],
+      ['CUMPLIMIENTO', `${porcentaje}%`],
+    ]
+
+    stats.forEach(([label, value], index) => {
+      const x = margen + index * statWidth
+      doc.setDrawColor(210, 210, 210)
+      doc.rect(x, statsY, statWidth - 2, 18)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(9)
+      doc.text(String(label), x + 3, statsY + 6)
+      doc.setFontSize(12)
+      doc.text(String(value), x + 3, statsY + 13)
+    })
+
+    let y = 91
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(10)
+    doc.text('DETALLE DE ESTUDIANTES', margen, y)
+    y += 6
+
+    const columnas = {
+      numero: margen,
+      estudiante: margen + 10,
+      estado: margen + 100,
+      observacion: margen + 135,
+    }
+
+    doc.setFillColor(235, 235, 235)
+    doc.rect(margen, y - 4, anchoContenido, 9, 'F')
+    doc.setFontSize(8)
+    doc.text('N.º', columnas.numero + 2, y + 1)
+    doc.text('ESTUDIANTE', columnas.estudiante, y + 1)
+    doc.text('ESTADO', columnas.estado, y + 1)
+    doc.text('OBSERVACIÓN', columnas.observacion, y + 1)
+    y += 10
+
+    students.forEach((student, index) => {
+      const revision = obtenerRevision(student.id)
+      const estado = estadoTexto(revision?.status)
+      const observacion = revision?.observation || '-'
+      const nombre = student.full_name || '-'
+      const nombreLineas = doc.splitTextToSize(nombre, 84)
+      const obsLineas = doc.splitTextToSize(observacion, 55)
+      const lineas = Math.max(nombreLineas.length, obsLineas.length, 1)
+      const alto = Math.max(7, lineas * 4 + 3)
+
+      if (y + alto > 275) {
+        doc.addPage()
+        y = 18
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(10)
+        doc.text('DETALLE DE ESTUDIANTES (CONTINUACIÓN)', margen, y)
+        y += 7
+      }
+
+      doc.setDrawColor(225, 225, 225)
+      doc.rect(margen, y - 4, anchoContenido, alto)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(7.5)
+      doc.text(String(index + 1), columnas.numero + 2, y + 1)
+      doc.text(nombreLineas, columnas.estudiante, y + 1)
+      doc.text(estado, columnas.estado, y + 1)
+      doc.text(obsLineas, columnas.observacion, y + 1)
+      y += alto
+    })
+
+    y += 8
+    if (y > 260) {
+      doc.addPage()
+      y = 25
+    }
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(9)
+    doc.text('RESUMEN', margen, y)
+    y += 6
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Firmadas: ${firmadas}`, margen, y)
+    doc.text(`No presentaron: ${noPresentaron}`, margen + 45, y)
+    doc.text(`Sin firma: ${sinFirma}`, margen + 100, y)
+    y += 5
+    doc.text(`Otros: ${otros}`, margen, y)
+    doc.text(`Pendientes: ${totalPendientes}`, margen + 45, y)
+
+    y += 24
+    if (y > 275) {
+      doc.addPage()
+      y = 35
+    }
+
+    doc.setDrawColor(100, 100, 100)
+    doc.line(65, y, 145, y)
+    doc.setFontSize(9)
+    doc.text('Firma del tutor', 105, y + 5, { align: 'center' })
+
+    doc.setFontSize(7)
+    doc.text('Reporte generado desde Agenda Escolar', anchoPagina / 2, 290, { align: 'center' })
+
+    const nombreArchivo = `Reporte_Agendas_${(gradoSeleccionado?.name || 'grado').replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g, '_')}_${(seccionSeleccionada?.name || 'seccion').replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g, '_')}_${diaSeleccionado.review_date}.pdf`
+    doc.save(nombreArchivo)
   }
 
   /*
@@ -1065,8 +1216,19 @@ function AgendaReviews() {
 
               </div>
 
-              <div className="agenda-auto-save">
-                Guardado automático
+              <div className="agenda-students-header-actions">
+                <div className="agenda-auto-save">
+                  Guardado automático
+                </div>
+
+                <button
+                  type="button"
+                  className="agenda-pdf-button"
+                  onClick={descargarReportePDF}
+                  disabled={loading || students.length === 0}
+                >
+                  📄 Descargar reporte PDF
+                </button>
               </div>
 
             </div>
