@@ -80,6 +80,9 @@ function StudentReader({
   const [readingCompleted, setReadingCompleted] =
     useState(false)
 
+  const readingCompletedRef =
+    useRef(false)
+
   const readingSecondsRef =
     useRef(0)
 
@@ -307,6 +310,8 @@ function StudentReader({
           Number(progreso.progress_percent) >= 100
 
         setReadingCompleted(progresoCompletado)
+        readingCompletedRef.current =
+          progresoCompletado
         setReadingActive(false)
 
         readingSecondsRef.current =
@@ -315,6 +320,8 @@ function StudentReader({
         lastSavedSecondsRef.current =
           tiempoGuardado
       } else {
+        setReadingCompleted(false)
+        readingCompletedRef.current = false
         setReadingSeconds(0)
 
         readingSecondsRef.current = 0
@@ -399,7 +406,7 @@ function StudentReader({
     lastActivityRef.current =
       Date.now()
 
-    if (!readingCompleted) {
+    if (!readingCompletedRef.current) {
       setReadingActive(true)
     } else {
       setReadingActive(false)
@@ -432,6 +439,13 @@ function StudentReader({
       nuevaPagina = pageNumber,
       segundos = readingSecondsRef.current
     ) => {
+      // Una lectura completada es un registro oficial e inmutable.
+      // Permite navegar, pero nunca vuelve a contar tiempo ni modifica
+      // la fecha, porcentaje o tiempo de culminación.
+      if (readingCompletedRef.current) {
+        return
+      }
+
       if (
         !loanId ||
         !nuevaPagina ||
@@ -458,6 +472,7 @@ function StudentReader({
         new Date().toISOString()
 
       if (estaCompletado) {
+        readingCompletedRef.current = true
         setReadingCompleted(true)
         setReadingActive(false)
       }
@@ -696,22 +711,24 @@ function StudentReader({
       ) {
         setReadingActive(false)
 
-        guardarProgreso(
-          pageNumber,
-          readingSecondsRef.current
-        )
+        if (!readingCompletedRef.current) {
+          guardarProgreso(
+            pageNumber,
+            readingSecondsRef.current
+          )
+        }
       } else {
         lastActivityRef.current =
           Date.now()
 
         if (
-          !readingCompleted &&
+          !readingCompletedRef.current &&
           !pdfLoading &&
           !pdfError &&
           !progressLoading
         ) {
           setReadingActive(true)
-        } else if (readingCompleted) {
+        } else if (readingCompletedRef.current) {
           setReadingActive(false)
         }
       }
@@ -757,6 +774,11 @@ function StudentReader({
 
     const intervalo =
       setInterval(() => {
+        if (readingCompletedRef.current) {
+          setReadingActive(false)
+          return
+        }
+
         const ahora =
           Date.now()
 
@@ -833,7 +855,8 @@ function StudentReader({
     function guardarAntesDeSalir() {
       if (
         loanId &&
-        numPages
+        numPages &&
+        !readingCompletedRef.current
       ) {
         guardarProgreso(
           pageNumber,
@@ -879,7 +902,7 @@ function StudentReader({
       nuevaPagina
     )
 
-    if (!readingCompleted) {
+    if (!readingCompletedRef.current) {
       registrarActividad()
 
       guardarProgreso(
@@ -900,7 +923,7 @@ function StudentReader({
       nuevaPagina
     )
 
-    if (!readingCompleted) {
+    if (!readingCompletedRef.current) {
       registrarActividad()
 
       guardarProgreso(
