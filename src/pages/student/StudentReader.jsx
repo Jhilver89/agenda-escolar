@@ -76,6 +76,9 @@ function StudentReader({
   const [readingActive, setReadingActive] =
     useState(false)
 
+  const [readingCompleted, setReadingCompleted] =
+    useState(false)
+
   const readingSecondsRef =
     useRef(0)
 
@@ -298,6 +301,13 @@ function StudentReader({
           tiempoGuardado
         )
 
+        const progresoCompletado =
+          progreso.status === 'completed' ||
+          Number(progreso.progress_percent) >= 100
+
+        setReadingCompleted(progresoCompletado)
+        setReadingActive(false)
+
         readingSecondsRef.current =
           tiempoGuardado
 
@@ -388,7 +398,11 @@ function StudentReader({
     lastActivityRef.current =
       Date.now()
 
-    setReadingActive(true)
+    if (!readingCompleted) {
+      setReadingActive(true)
+    } else {
+      setReadingActive(false)
+    }
   }
 
   function onDocumentLoadError(err) {
@@ -435,8 +449,17 @@ function StudentReader({
           ) / 100
         )
 
+      const estaCompletado =
+        porcentaje >= 100 ||
+        nuevaPagina >= numPages
+
       const ahora =
         new Date().toISOString()
+
+      if (estaCompletado) {
+        setReadingCompleted(true)
+        setReadingActive(false)
+      }
 
       try {
         /*
@@ -471,6 +494,16 @@ function StudentReader({
 
               last_read_at:
                 ahora,
+
+              completed_at:
+                estaCompletado
+                  ? ahora
+                  : null,
+
+              status:
+                estaCompletado
+                  ? 'completed'
+                  : 'reading',
 
               updated_at:
                 ahora,
@@ -540,10 +573,14 @@ function StudentReader({
               ahora,
 
             completed_at:
-              null,
+              estaCompletado
+                ? ahora
+                : null,
 
             status:
-              'reading',
+              estaCompletado
+                ? 'completed'
+                : 'reading',
           })
           .select(`
             id
@@ -598,6 +635,7 @@ function StudentReader({
         Date.now()
 
       if (
+        !readingCompleted &&
         !pdfLoading &&
         !pdfError &&
         !progressLoading
@@ -608,6 +646,7 @@ function StudentReader({
       pdfLoading,
       pdfError,
       progressLoading,
+      readingCompleted,
     ])
 
   /*
@@ -665,11 +704,14 @@ function StudentReader({
           Date.now()
 
         if (
+          !readingCompleted &&
           !pdfLoading &&
           !pdfError &&
           !progressLoading
         ) {
           setReadingActive(true)
+        } else if (readingCompleted) {
+          setReadingActive(false)
         }
       }
     }
@@ -691,6 +733,7 @@ function StudentReader({
     pdfError,
     pdfLoading,
     progressLoading,
+    readingCompleted,
   ])
 
   /*
@@ -774,6 +817,7 @@ function StudentReader({
     pdfError,
     pdfLoading,
     progressLoading,
+    readingCompleted,
     guardarProgreso,
   ])
 
@@ -831,7 +875,12 @@ function StudentReader({
       nuevaPagina
     )
 
-    registrarActividad()
+    if (nuevaPagina >= numPages) {
+      setReadingCompleted(true)
+      setReadingActive(false)
+    } else {
+      registrarActividad()
+    }
 
     guardarProgreso(
       nuevaPagina,
@@ -930,13 +979,15 @@ function StudentReader({
     0
 
   const porcentaje =
-    totalPages > 0
-      ? Math.round(
-          (pageNumber /
-            totalPages) *
-            100
-        )
-      : 0
+    readingCompleted
+      ? 100
+      : totalPages > 0
+        ? Math.round(
+            (pageNumber /
+              totalPages) *
+              100
+          )
+        : 0
 
   /*
    * =========================
@@ -1125,9 +1176,11 @@ function StudentReader({
             </span>
 
             <strong>
-              {readingActive
-                ? 'Leyendo'
-                : 'En pausa'}
+              {readingCompleted
+                ? 'Lectura completada'
+                : readingActive
+                  ? 'Leyendo'
+                  : 'En pausa'}
             </strong>
           </div>
         </div>
@@ -1256,7 +1309,8 @@ function StudentReader({
               pageNumber <= 1 ||
               pdfLoading ||
               !!pdfError ||
-              progressLoading
+              progressLoading ||
+              readingCompleted
             }
           >
             ← Página anterior
@@ -1275,7 +1329,8 @@ function StudentReader({
               pageNumber >= numPages ||
               pdfLoading ||
               !!pdfError ||
-              progressLoading
+              progressLoading ||
+              readingCompleted
             }
           >
             Página siguiente →
