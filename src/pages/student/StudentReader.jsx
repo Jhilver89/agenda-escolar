@@ -482,6 +482,63 @@ function StudentReader({
           820 * zoom
         )
 
+  /*
+   * =========================
+   * EVENTOS DEL DOCUMENTO PDF
+   * =========================
+   */
+
+  function onDocumentLoadSuccess(
+    documento
+  ) {
+    const paginas =
+      Number(
+        documento?.numPages
+      ) || 0
+
+    setNumPages(paginas)
+    setPdfLoading(false)
+    setPdfError('')
+
+    if (paginas > 0) {
+      setPageNumber(
+        (paginaActual) =>
+          Math.min(
+            Math.max(
+              paginaActual,
+              1
+            ),
+            paginas
+          )
+      )
+    }
+
+    lastActivityRef.current =
+      Date.now()
+
+    if (
+      !readingCompletedRef.current &&
+      !progressLoading
+    ) {
+      setReadingActive(true)
+    }
+  }
+
+  function onDocumentLoadError(
+    errorPdf
+  ) {
+    console.error(
+      'ERROR AL CARGAR PDF:',
+      errorPdf
+    )
+
+    setPdfLoading(false)
+    setPdfError(
+      'No se pudo cargar el archivo PDF. Intenta nuevamente.'
+    )
+    setReadingActive(false)
+  }
+
 
   /*
    * =========================
