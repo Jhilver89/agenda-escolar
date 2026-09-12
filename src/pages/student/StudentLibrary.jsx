@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
+import { Document, Page, pdfjs } from 'react-pdf'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import './StudentLibrary.css'
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString()
 
 function StudentLibrary({ profile, cerrarSesion }) {
   const navigate = useNavigate()
@@ -251,7 +257,7 @@ function StudentLibrary({ profile, cerrarSesion }) {
             progreso.completed_at ||
               progreso.updated_at ||
               prestamo.borrowed_at
-          ) >
+          ) <
             new Date(
               historialMap[
                 prestamo.book_id
@@ -788,6 +794,16 @@ function StudentLibrary({ profile, cerrarSesion }) {
    * =========================
    */
 
+  function obtenerPdfUrl(bookId) {
+    const proxyUrl = import.meta.env.VITE_LIBRARY_PROXY_URL
+
+    if (!proxyUrl || !bookId) {
+      return null
+    }
+
+    return `${proxyUrl.replace(/\/$/, '')}/api/library/books/${bookId}/pdf`
+  }
+
   function abrirLector(bookId) {
     navigate(
       `/estudiante/biblioteca/libro/${bookId}`
@@ -1236,6 +1252,35 @@ function StudentLibrary({ profile, cerrarSesion }) {
                               `Portada de ${libro.title}`
                             }
                           />
+
+                        ) : libro.pdf_url ? (
+
+                          <div className="library-pdf-cover">
+                            <Document
+                              file={obtenerPdfUrl(libro.id)}
+                              loading={
+                                <div className="library-cover-placeholder">
+                                  <span>📖</span>
+                                  <strong>Cargando</strong>
+                                  <small>Portada...</small>
+                                </div>
+                              }
+                              error={
+                                <div className="library-cover-placeholder">
+                                  <span>📖</span>
+                                  <strong>Biblioteca</strong>
+                                  <small>Digital</small>
+                                </div>
+                              }
+                            >
+                              <Page
+                                pageNumber={1}
+                                width={260}
+                                renderTextLayer={false}
+                                renderAnnotationLayer={false}
+                              />
+                            </Document>
+                          </div>
 
                         ) : (
 

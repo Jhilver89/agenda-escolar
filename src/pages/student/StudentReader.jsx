@@ -56,6 +56,24 @@ function StudentReader({
   const [pdfError, setPdfError] =
     useState('')
 
+  /*
+   * =========================
+   * ZOOM Y AJUSTE DE PANTALLA
+   * =========================
+   */
+
+  const [zoom, setZoom] =
+    useState(1)
+
+  const [ajustarPantalla, setAjustarPantalla] =
+    useState(true)
+
+  const [viewerWidth, setViewerWidth] =
+    useState(820)
+
+  const pdfContainerRef =
+    useRef(null)
+
   const [loanId, setLoanId] =
     useState(null)
 
@@ -374,6 +392,94 @@ function StudentReader({
 
     return `${proxyUrl.replace(/\/$/, '')}/api/library/books/${bookId}/pdf`
   }, [bookId])
+
+  /*
+   * =========================
+   * MEDIR ÁREA DEL LECTOR
+   * =========================
+   */
+
+  useEffect(() => {
+    const elemento =
+      pdfContainerRef.current
+
+    if (!elemento) {
+      return
+    }
+
+    function actualizarAncho() {
+      const ancho =
+        elemento.clientWidth - 48
+
+      if (ancho > 0) {
+        setViewerWidth(
+          Math.max(
+            280,
+            ancho
+          )
+        )
+      }
+    }
+
+    actualizarAncho()
+
+    const observer =
+      new ResizeObserver(
+        actualizarAncho
+      )
+
+    observer.observe(
+      elemento
+    )
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [pdfLoading, pdfError])
+
+  /*
+   * =========================
+   * CONTROLES DE ZOOM
+   * =========================
+   */
+
+  function acercarPdf() {
+    setAjustarPantalla(false)
+
+    setZoom((zoomActual) =>
+      Math.min(
+        1.8,
+        Number(
+          (zoomActual + 0.1).toFixed(2)
+        )
+      )
+    )
+  }
+
+  function alejarPdf() {
+    setAjustarPantalla(false)
+
+    setZoom((zoomActual) =>
+      Math.max(
+        0.6,
+        Number(
+          (zoomActual - 0.1).toFixed(2)
+        )
+      )
+    )
+  }
+
+  function ajustarPdfAPantalla() {
+    setAjustarPantalla(true)
+    setZoom(1)
+  }
+
+  const anchoPagina =
+    ajustarPantalla
+      ? viewerWidth
+      : Math.round(
+          820 * zoom
+        )
 
   /*
    * =========================
@@ -1234,7 +1340,10 @@ function StudentReader({
 
           ) : (
 
-            <div className="reader-pdf-container">
+            <div
+              ref={pdfContainerRef}
+              className="reader-pdf-container"
+            >
 
               {(pdfLoading ||
                 progressLoading) && (
@@ -1303,7 +1412,7 @@ function StudentReader({
                       pageNumber={
                         pageNumber
                       }
-                      width={820}
+                      width={anchoPagina}
                       renderTextLayer={
                         true
                       }
@@ -1323,6 +1432,47 @@ function StudentReader({
           )}
 
         </section>
+
+        <div className="reader-zoom-controls">
+          <button
+            type="button"
+            className="reader-zoom-button"
+            onClick={alejarPdf}
+            disabled={zoom <= 0.6 && !ajustarPantalla}
+            aria-label="Alejar PDF"
+            title="Alejar"
+          >
+            −
+          </button>
+
+          <button
+            type="button"
+            className={
+              `reader-zoom-level ${
+                ajustarPantalla
+                  ? 'active'
+                  : ''
+              }`
+            }
+            onClick={ajustarPdfAPantalla}
+            title="Ajustar el PDF al ancho disponible"
+          >
+            {ajustarPantalla
+              ? 'Ajustar pantalla'
+              : `${Math.round(zoom * 100)}%`}
+          </button>
+
+          <button
+            type="button"
+            className="reader-zoom-button"
+            onClick={acercarPdf}
+            disabled={zoom >= 1.8 && !ajustarPantalla}
+            aria-label="Acercar PDF"
+            title="Acercar"
+          >
+            +
+          </button>
+        </div>
 
         <div className="reader-controls">
 

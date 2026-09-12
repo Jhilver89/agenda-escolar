@@ -116,6 +116,17 @@ function AdminDashboard({ profile, cerrarSesion }) {
             </p>
           </div>
 
+          <div
+            className="dashboard-card"
+            onClick={() => navigate('/admin/biblioteca')}
+          >
+            <div className="card-icon">📚</div>
+            <h3>Biblioteca Digital</h3>
+            <p>
+              Gestionar libros y materiales de lectura.
+            </p>
+          </div>
+
         </div>
 
       </section>

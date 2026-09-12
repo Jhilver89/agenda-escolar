@@ -9,6 +9,7 @@ import {
 import { supabase } from './lib/supabase'
 
 import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminLibrary from './pages/admin/AdminLibrary'
 import GradesSections from './pages/admin/GradesSections'
 import Teachers from './pages/admin/Teachers'
 import TeacherAssignments from './pages/admin/TeacherAssignments'
@@ -336,6 +337,11 @@ function App() {
                 cerrarSesion={cerrarSesion}
               />
             }
+          />
+
+          <Route
+            path="/admin/biblioteca"
+            element={<AdminLibrary />}
           />
 
           <Route

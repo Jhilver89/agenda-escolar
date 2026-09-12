@@ -344,3 +344,96 @@
   font-size: 15px;
   color: #374151;
 }
+/* =========================
+   CONTROLES DE ZOOM DEL PDF
+========================= */
+
+.reader-zoom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.reader-zoom-button,
+.reader-zoom-level {
+  border: 1px solid #d5dbe5;
+  background: #ffffff;
+  color: #26364a;
+  min-height: 40px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.reader-zoom-button {
+  width: 42px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.reader-zoom-level {
+  min-width: 150px;
+  padding: 0 16px;
+}
+
+.reader-zoom-button:hover,
+.reader-zoom-level:hover {
+  border-color: #1f7a8c;
+  background: #f4f9fa;
+}
+
+.reader-zoom-button:active,
+.reader-zoom-level:active {
+  transform: scale(0.97);
+}
+
+.reader-zoom-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.reader-zoom-level.active {
+  border-color: #1f7a8c;
+  background: #f4f9fa;
+}
+
+.reader-pdf-container {
+  overflow: auto;
+  width: 100%;
+}
+
+.reader-pdf-page {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.reader-pdf-page canvas {
+  display: block;
+  max-width: none;
+  height: auto !important;
+}
+
+@media (max-width: 768px) {
+  .reader-zoom-controls {
+    margin: 10px 0;
+  }
+
+  .reader-zoom-button {
+    width: 38px;
+    min-height: 38px;
+  }
+
+  .reader-zoom-level {
+    min-width: 135px;
+    min-height: 38px;
+  }
+}
