@@ -34,6 +34,7 @@ function StudentReader({
   cerrarSesion,
 }) {
   const { bookId } = useParams()
+  const navigate = useNavigate()
 
   const [libro, setLibro] = useState(null)
 
