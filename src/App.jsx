@@ -28,6 +28,8 @@ import StudentAgenda from './pages/student/StudentAgenda'
 import StudentLibrary from './pages/student/StudentLibrary'
 import StudentReader from './pages/student/StudentReader'
 import StudentCertificate from './pages/student/StudentCertificate'
+import StudentAchievements from './pages/student/StudentAchievements'
+import StudentCertificates from './pages/student/StudentCertificates'
 import StudentCertificateVerification from './pages/student/StudentCertificateVerification'
 
 import './App.css'
@@ -461,6 +463,26 @@ function App() {
             path="/estudiante/biblioteca/libro/:bookId"
             element={
               <StudentReader
+                profile={profile}
+                cerrarSesion={cerrarSesion}
+              />
+            }
+          />
+
+          <Route
+            path="/estudiante/logros"
+            element={
+              <StudentAchievements
+                profile={profile}
+                cerrarSesion={cerrarSesion}
+              />
+            }
+          />
+
+          <Route
+            path="/estudiante/certificados"
+            element={
+              <StudentCertificates
                 profile={profile}
                 cerrarSesion={cerrarSesion}
               />

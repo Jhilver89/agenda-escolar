@@ -341,7 +341,12 @@ function StudentDashboard({ profile, cerrarSesion }) {
             </div>
           </article>
 
-          <article className="student-card">
+          <article
+            className="student-card student-card-clickable"
+            onClick={() => {
+              navigate('/estudiante/certificados')
+            }}
+          >
 
             <div className="student-card-icon">
               🎓
@@ -354,9 +359,13 @@ function StudentDashboard({ profile, cerrarSesion }) {
               </h3>
 
               <p>
-                Tus certificados de lectura
-                aparecerán aquí.
+                Consulta tus certificados de lectura
+                obtenidos.
               </p>
+
+              <span className="student-card-link">
+                Ver mis certificados →
+              </span>
 
             </div>
 
