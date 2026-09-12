@@ -865,6 +865,8 @@ function StudentReader({
    * =========================
    */
 
+  // La lectura completada detiene el cronómetro, pero NO bloquea la navegación.
+  // El estudiante puede volver a revisar cualquier página del libro.
   function paginaAnterior() {
     const nuevaPagina =
       Math.max(
@@ -876,10 +878,7 @@ function StudentReader({
       nuevaPagina
     )
 
-    if (nuevaPagina >= numPages) {
-      setReadingCompleted(true)
-      setReadingActive(false)
-    } else {
+    if (!readingCompleted) {
       registrarActividad()
     }
 
@@ -900,7 +899,9 @@ function StudentReader({
       nuevaPagina
     )
 
-    registrarActividad()
+    if (!readingCompleted) {
+      registrarActividad()
+    }
 
     guardarProgreso(
       nuevaPagina,
@@ -1308,9 +1309,9 @@ function StudentReader({
             }
             disabled={
               pageNumber <= 1 ||
+              loading ||
               pdfLoading ||
-              !!pdfError ||
-              progressLoading
+              !!pdfError
             }
           >
             ← Página anterior
@@ -1327,9 +1328,9 @@ function StudentReader({
             }
             disabled={
               pageNumber >= numPages ||
+              loading ||
               pdfLoading ||
-              !!pdfError ||
-              progressLoading
+              !!pdfError
             }
           >
             Página siguiente →
