@@ -1310,8 +1310,7 @@ function StudentReader({
               pageNumber <= 1 ||
               pdfLoading ||
               !!pdfError ||
-              progressLoading ||
-              readingCompleted
+              progressLoading
             }
           >
             ← Página anterior
@@ -1330,8 +1329,7 @@ function StudentReader({
               pageNumber >= numPages ||
               pdfLoading ||
               !!pdfError ||
-              progressLoading ||
-              readingCompleted
+              progressLoading
             }
           >
             Página siguiente →
