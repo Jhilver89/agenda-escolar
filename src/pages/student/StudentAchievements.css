@@ -1,0 +1,561 @@
+/* ================================
+   PÁGINA DE LOGROS DEL ESTUDIANTE
+   ================================ */
+
+.student-achievements-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+/* ================================
+   HEADER
+   ================================ */
+
+.student-achievements-header {
+  min-height: 82px;
+  padding: 16px 32px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.student-achievements-header > div {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.student-achievements-back {
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.student-achievements-back:hover {
+  color: #111827;
+}
+
+.student-achievements-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-achievements-title > span {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff7ed;
+  font-size: 25px;
+}
+
+.student-achievements-title p {
+  margin: 0 0 3px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.student-achievements-title h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.student-achievements-logout {
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #475569;
+
+  padding: 9px 14px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.student-achievements-logout:hover {
+  background: #f8fafc;
+}
+
+/* ================================
+   CONTENIDO
+   ================================ */
+
+.student-achievements-content {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 34px 0 50px;
+}
+
+/* ================================
+   RESUMEN
+   ================================ */
+
+.student-achievements-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+
+  margin-bottom: 28px;
+  padding: 28px 30px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+
+.student-achievements-label {
+  margin: 0 0 6px;
+
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.student-achievements-summary h2 {
+  margin: 0 0 8px;
+
+  color: #111827;
+  font-size: 25px;
+  line-height: 1.25;
+}
+
+.student-achievements-summary p:last-child {
+  max-width: 680px;
+  margin: 0;
+
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.student-achievements-counter {
+  min-width: 125px;
+  padding: 16px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.student-achievements-counter strong {
+  color: #111827;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.student-achievements-counter span {
+  margin-top: 7px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* ================================
+   TARJETAS
+   ================================ */
+
+.student-achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.student-achievement-card {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+
+  min-height: 178px;
+  padding: 22px;
+
+  box-sizing: border-box;
+
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+/* ================================
+   LOGRO OBTENIDO
+   ================================ */
+
+.student-achievement-card.earned {
+  border: 2px solid #22c55e;
+  background: #f7fff9;
+  box-shadow:
+    0 5px 18px rgba(34, 197, 94, 0.12),
+    inset 0 0 0 1px rgba(34, 197, 94, 0.05);
+}
+
+.student-achievement-card.earned:hover {
+  transform: translateY(-3px);
+
+  border-color: #16a34a;
+
+  box-shadow:
+    0 9px 24px rgba(34, 197, 94, 0.18),
+    inset 0 0 0 1px rgba(34, 197, 94, 0.08);
+}
+
+.student-achievement-card.earned
+.student-achievement-icon {
+  background: #ecfdf3;
+  border-color: #86efac;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.10);
+}
+
+.student-achievement-card.earned
+.student-achievement-status {
+  color: #15803d;
+}
+
+.student-achievement-card.earned
+.student-achievement-check {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  box-shadow: 0 3px 8px rgba(34, 197, 94, 0.25);
+}
+
+/* ================================
+   LOGRO BLOQUEADO
+   ================================ */
+
+.student-achievement-card.locked {
+  background: #f8fafc;
+  opacity: 0.78;
+}
+
+.student-achievement-icon {
+  flex: 0 0 64px;
+
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+
+  font-size: 34px;
+}
+
+.student-achievement-body {
+  min-width: 0;
+  padding-right: 25px;
+}
+
+.student-achievement-status {
+  margin-bottom: 5px;
+
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+.student-achievement-body h3 {
+  margin: 0 0 7px;
+
+  color: #111827;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.student-achievement-body p {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.student-achievement-requirement {
+  display: inline-block;
+
+  margin-top: 13px;
+  padding: 5px 9px;
+
+  border-radius: 7px;
+  background: #f1f5f9;
+  color: #475569;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.student-achievement-earned-date {
+  margin-top: 9px;
+
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.student-achievement-check {
+  position: absolute;
+  top: 17px;
+  right: 18px;
+
+  font-size: 17px;
+}
+
+/* ================================
+   CARGA / ERROR / VACÍO
+   ================================ */
+
+.student-achievements-loading,
+.student-achievements-error,
+.student-achievements-empty {
+  min-height: 320px;
+  padding: 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+
+.student-achievements-loading-icon {
+  margin-bottom: 14px;
+  font-size: 42px;
+}
+
+.student-achievements-loading h2,
+.student-achievements-error h2,
+.student-achievements-empty h2 {
+  margin: 0 0 8px;
+
+  color: #111827;
+  font-size: 20px;
+}
+
+.student-achievements-loading p,
+.student-achievements-error p,
+.student-achievements-empty p {
+  max-width: 500px;
+  margin: 0;
+
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.student-achievements-error > div,
+.student-achievements-empty > div {
+  margin-bottom: 12px;
+  font-size: 38px;
+}
+
+.student-achievements-error button {
+  margin-top: 20px;
+
+  border: none;
+  border-radius: 9px;
+
+  padding: 10px 16px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.student-achievements-error button:hover {
+  background: #1d4ed8;
+}
+
+/* ================================
+   BOTÓN FINAL
+   ================================ */
+
+.student-achievements-footer-actions {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 30px;
+}
+
+.student-achievements-library-button {
+  border: 1px solid #dbeafe;
+  border-radius: 9px;
+
+  padding: 10px 16px;
+
+  background: #ffffff;
+  color: #2563eb;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.student-achievements-library-button:hover {
+  background: #eff6ff;
+}
+
+/* ================================
+   RESPONSIVE
+   ================================ */
+
+@media (max-width: 800px) {
+  .student-achievements-header {
+    padding: 14px 18px;
+  }
+
+  .student-achievements-header > div {
+    gap: 14px;
+  }
+
+  .student-achievements-title h1 {
+    font-size: 20px;
+  }
+
+  .student-achievements-title > span {
+    width: 40px;
+    height: 40px;
+    font-size: 21px;
+  }
+
+  .student-achievements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-achievements-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .student-achievements-counter {
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 560px) {
+  .student-achievements-header {
+    align-items: flex-start;
+  }
+
+  .student-achievements-header > div {
+    align-items: flex-start;
+  }
+
+  .student-achievements-title {
+    gap: 9px;
+  }
+
+  .student-achievements-title p {
+    font-size: 9px;
+  }
+
+  .student-achievements-title h1 {
+    font-size: 18px;
+  }
+
+  .student-achievements-logout {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .student-achievements-content {
+    width: min(100% - 24px, 1180px);
+    padding-top: 20px;
+  }
+
+  .student-achievements-summary {
+    padding: 22px 20px;
+  }
+
+  .student-achievements-summary h2 {
+    font-size: 21px;
+  }
+
+  .student-achievement-card {
+    gap: 13px;
+    padding: 18px;
+  }
+
+  .student-achievement-icon {
+    flex-basis: 54px;
+    width: 54px;
+    height: 54px;
+    border-radius: 13px;
+    font-size: 28px;
+  }
+
+  .student-achievement-body h3 {
+    font-size: 16px;
+  }
+
+  .student-achievement-card.earned
+  .student-achievement-check {
+    width: 25px;
+    height: 25px;
+    font-size: 16px;
+  }
+}

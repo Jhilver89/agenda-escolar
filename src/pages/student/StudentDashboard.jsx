@@ -313,8 +313,12 @@ function StudentDashboard({ profile, cerrarSesion }) {
 
           </article>
 
-          <article className="student-card">
-
+          <article
+            className="student-card student-card-clickable"
+            onClick={() => {
+              navigate('/estudiante/logros')
+            }}
+          >
             <div className="student-card-icon">
               🏆
             </div>
@@ -326,12 +330,15 @@ function StudentDashboard({ profile, cerrarSesion }) {
               </h3>
 
               <p>
-                Aquí aparecerán tus logros y
-                reconocimientos.
+                Consulta tus logros y
+                reconocimientos de lectura.
               </p>
 
-            </div>
+              <span className="student-card-link">
+                Ver mis logros →
+              </span>
 
+            </div>
           </article>
 
           <article className="student-card">

@@ -542,6 +542,32 @@ function StudentReader({
 
   /*
    * =========================
+   * EVALUAR LOGROS
+   * =========================
+   */
+
+  async function evaluarLogros() {
+    try {
+      const { error: logrosError } = await supabase.rpc(
+        'evaluate_my_library_achievements'
+      )
+
+      if (logrosError) {
+        console.error(
+          'ERROR AL EVALUAR LOGROS:',
+          logrosError
+        )
+      }
+    } catch (err) {
+      console.error(
+        'ERROR INESPERADO AL EVALUAR LOGROS:',
+        err
+      )
+    }
+  }
+
+  /*
+   * =========================
    * GUARDAR PROGRESO
    * =========================
    */
@@ -658,6 +684,10 @@ function StudentReader({
           lastSaveTimeRef.current =
             Date.now()
 
+          if (estaCompletado) {
+            await evaluarLogros()
+          }
+
           return
         }
 
@@ -735,6 +765,10 @@ function StudentReader({
 
         lastSaveTimeRef.current =
           Date.now()
+
+        if (estaCompletado) {
+          await evaluarLogros()
+        }
 
       } catch (err) {
         console.error(
