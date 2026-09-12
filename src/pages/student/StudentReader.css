@@ -1,0 +1,346 @@
+.student-reader-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  color: #1f2937;
+}
+
+.student-reader-header {
+  min-height: 76px;
+  padding: 0 32px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.reader-header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+}
+
+.reader-back-link {
+  border: none;
+  background: transparent;
+  color: #2864e8;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.reader-back-link:hover {
+  text-decoration: underline;
+}
+
+.reader-book-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.reader-book-title strong {
+  font-size: 16px;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reader-book-title span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.student-reader-logout {
+  border: none;
+  background: #f3f4f6;
+  color: #374151;
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.student-reader-logout:hover {
+  background: #e5e7eb;
+}
+
+.student-reader-content {
+  width: min(1200px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 30px 0 40px;
+}
+
+.reader-book-info {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 16px;
+}
+
+.reader-label {
+  margin: 0 0 7px;
+  color: #2864e8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.reader-book-info h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.reader-author {
+  margin: 7px 0 0;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.reader-progress-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #6b7280;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.reader-progress-summary strong {
+  color: #2864e8;
+  font-size: 22px;
+}
+
+.reader-progress-bar {
+  width: 100%;
+  height: 8px;
+  margin-bottom: 22px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.reader-progress-fill {
+  height: 100%;
+  background: #2864e8;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.reader-viewer {
+  width: 100%;
+  height: 760px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.reader-pdf {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.reader-no-pdf {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  padding: 30px;
+}
+
+.reader-no-pdf > div {
+  font-size: 56px;
+  margin-bottom: 14px;
+}
+
+.reader-no-pdf h2 {
+  margin: 0 0 8px;
+  color: #111827;
+  font-size: 24px;
+}
+
+.reader-no-pdf p {
+  max-width: 480px;
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.reader-controls {
+  margin-top: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.reader-control-button {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+
+  padding: 11px 18px;
+  border-radius: 9px;
+
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reader-control-button:hover:not(:disabled) {
+  border-color: #2864e8;
+  color: #2864e8;
+}
+
+.reader-control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reader-page-indicator {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.student-reader-loading,
+.student-reader-error {
+  min-height: 100vh;
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.reader-loading-icon,
+.reader-error-icon {
+  font-size: 54px;
+  margin-bottom: 15px;
+}
+
+.student-reader-loading h2,
+.student-reader-error h2 {
+  margin: 0 0 8px;
+  color: #111827;
+}
+
+.student-reader-loading p,
+.student-reader-error p {
+  margin: 0;
+  max-width: 500px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.reader-back-button {
+  margin-top: 22px;
+  border: none;
+  background: #2864e8;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reader-back-button:hover {
+  background: #1f54c7;
+}
+
+@media (max-width: 768px) {
+  .student-reader-header {
+    padding: 0 18px;
+  }
+
+  .reader-header-left {
+    gap: 12px;
+  }
+
+  .reader-book-title {
+    display: none;
+  }
+
+  .student-reader-content {
+    width: calc(100% - 24px);
+    padding-top: 20px;
+  }
+
+  .reader-book-info {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .reader-book-info h1 {
+    font-size: 24px;
+  }
+
+  .reader-viewer {
+    height: 620px;
+  }
+
+  .reader-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .reader-page-indicator {
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+}
+.reader-reading-time {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+.reader-reading-time > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.reader-reading-time span {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reader-reading-time strong {
+  font-size: 15px;
+  color: #374151;
+}

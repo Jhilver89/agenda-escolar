@@ -22,6 +22,13 @@ import Incentives from './pages/admin/Incentives'
 import TutorDashboard from './pages/tutor/TutorDashboard'
 import TutorSection from './pages/tutor/TutorSection'
 
+import StudentDashboard from './pages/student/StudentDashboard'
+import StudentAgenda from './pages/student/StudentAgenda'
+import StudentLibrary from './pages/student/StudentLibrary'
+import StudentReader from './pages/student/StudentReader'
+import StudentCertificate from './pages/student/StudentCertificate'
+import StudentCertificateVerification from './pages/student/StudentCertificateVerification'
+
 import './App.css'
 
 function App() {
@@ -71,8 +78,15 @@ function App() {
       .single()
 
     if (error) {
-      console.error('ERROR AL CARGAR PERFIL:', error)
-      alert(`Error al cargar perfil: ${error.message}`)
+      console.error(
+        'ERROR AL CARGAR PERFIL:',
+        error
+      )
+
+      alert(
+        `Error al cargar perfil: ${error.message}`
+      )
+
       return
     }
 
@@ -82,10 +96,23 @@ function App() {
   async function iniciarSesion(e) {
     e.preventDefault()
 
-    const email = e.target.email.value
-    const password = e.target.password.value
+    const identificador =
+      e.target.email.value.trim()
+
+    const password =
+      e.target.password.value
 
     setLoading(true)
+
+    let email = identificador
+
+    const esCodigoEstudiante =
+      /^\d+$/.test(identificador)
+
+    if (esCodigoEstudiante) {
+      email =
+        `${identificador}@students.agendaescolar.local`
+    }
 
     const { error } =
       await supabase.auth.signInWithPassword({
@@ -94,9 +121,17 @@ function App() {
       })
 
     if (error) {
-      console.error('ERROR SUPABASE:', error)
-      alert(`Error: ${error.message}`)
+      console.error(
+        'ERROR SUPABASE:',
+        error
+      )
+
+      alert(
+        'No se pudo iniciar sesión. Verifica tu código/correo y contraseña.'
+      )
+
       setLoading(false)
+
       return
     }
 
@@ -105,6 +140,7 @@ function App() {
 
   async function cerrarSesion() {
     await supabase.auth.signOut()
+
     setSession(null)
     setProfile(null)
   }
@@ -113,13 +149,23 @@ function App() {
     return (
       <main className="login-page">
         <section className="login-card">
+
           <div className="login-header">
-            <div className="logo">AE</div>
 
-            <h1>Agenda Escolar</h1>
+            <div className="logo">
+              AE
+            </div>
 
-            <p>Cargando...</p>
+            <h1>
+              Agenda Escolar
+            </h1>
+
+            <p>
+              Cargando...
+            </p>
+
           </div>
+
         </section>
       </main>
     )
@@ -127,69 +173,113 @@ function App() {
 
   if (!session) {
     return (
-      <main className="login-page">
-        <section className="login-card">
+      <BrowserRouter>
 
-          <div className="login-header">
-            <div className="logo">AE</div>
+        <Routes>
 
-            <h1>Agenda Escolar</h1>
+          <Route
+            path="/verificar-certificado/:certificateCode"
+            element={
+              <StudentCertificateVerification />
+            }
+          />
 
-            <p>
-              Sistema de control de revisión de agendas
-            </p>
-          </div>
+          <Route
+            path="*"
+            element={
+              <main className="login-page">
 
-          <form
-            className="login-form"
-            onSubmit={iniciarSesion}
-          >
+                <section className="login-card">
 
-            <div className="form-group">
-              <label htmlFor="email">
-                Correo electrónico
-              </label>
+                  <div className="login-header">
 
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Ingrese su correo"
-                required
-              />
-            </div>
+                    <div className="logo">
+                      AE
+                    </div>
 
-            <div className="form-group">
-              <label htmlFor="password">
-                Contraseña
-              </label>
+                    <h1>
+                      Agenda Escolar
+                    </h1>
 
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Ingrese su contraseña"
-                required
-              />
-            </div>
+                    <p>
+                      Sistema de control de revisión de agendas
+                    </p>
 
-            <button
-              className="login-button"
-              type="submit"
-            >
-              Iniciar sesión
-            </button>
+                  </div>
 
-          </form>
+                  <form
+                    className="login-form"
+                    onSubmit={iniciarSesion}
+                  >
 
-          <div className="login-footer">
-            <span>Agenda Escolar</span>
-            <span>•</span>
-            <span>2026</span>
-          </div>
+                    <div className="form-group">
 
-        </section>
-      </main>
+                      <label htmlFor="email">
+                        Correo electrónico o código de estudiante
+                      </label>
+
+                      <input
+                        id="email"
+                        name="email"
+                        type="text"
+                        placeholder="Ingrese su correo o código"
+                        autoComplete="username"
+                        required
+                      />
+
+                    </div>
+
+                    <div className="form-group">
+
+                      <label htmlFor="password">
+                        Contraseña
+                      </label>
+
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Ingrese su contraseña"
+                        autoComplete="current-password"
+                        required
+                      />
+
+                    </div>
+
+                    <button
+                      className="login-button"
+                      type="submit"
+                    >
+                      Iniciar sesión
+                    </button>
+
+                  </form>
+
+                  <div className="login-footer">
+
+                    <span>
+                      Agenda Escolar
+                    </span>
+
+                    <span>
+                      •
+                    </span>
+
+                    <span>
+                      2026
+                    </span>
+
+                  </div>
+
+                </section>
+
+              </main>
+            }
+          />
+
+        </Routes>
+
+      </BrowserRouter>
     )
   }
 
@@ -199,9 +289,14 @@ function App() {
         <section className="login-card">
 
           <div className="login-header">
-            <div className="logo">AE</div>
 
-            <h1>Agenda Escolar</h1>
+            <div className="logo">
+              AE
+            </div>
+
+            <h1>
+              Agenda Escolar
+            </h1>
 
             <p>
               No se encontró el perfil del usuario.
@@ -221,14 +316,17 @@ function App() {
     )
   }
 
-  return (
-    <BrowserRouter>
+  /*
+   * ============================
+   * ADMINISTRADOR
+   * ============================
+   */
 
-      {profile.role === 'admin' ? (
+  if (profile.role === 'admin') {
+    return (
+      <BrowserRouter>
 
         <Routes>
-
-          {/* ADMINISTRADOR */}
 
           <Route
             path="/"
@@ -287,16 +385,116 @@ function App() {
 
           <Route
             path="*"
-            element={<Navigate to="/" replace />}
+            element={
+              <Navigate
+                to="/"
+                replace
+              />
+            }
           />
 
         </Routes>
 
-      ) : (
+      </BrowserRouter>
+    )
+  }
+
+  /*
+   * ============================
+   * ESTUDIANTE
+   * ============================
+   */
+
+  if (profile.role === 'student') {
+    return (
+      <BrowserRouter>
 
         <Routes>
 
-          {/* TUTOR */}
+          <Route
+            path="/"
+            element={
+              <StudentDashboard
+                profile={profile}
+                cerrarSesion={cerrarSesion}
+              />
+            }
+          />
+
+          <Route
+            path="/estudiante"
+            element={
+              <StudentDashboard
+                profile={profile}
+                cerrarSesion={cerrarSesion}
+              />
+            }
+          />
+
+          <Route
+            path="/estudiante/agenda"
+            element={
+              <StudentAgenda
+                profile={profile}
+                cerrarSesion={cerrarSesion}
+              />
+            }
+          />
+
+          <Route
+            path="/estudiante/biblioteca"
+            element={
+              <StudentLibrary
+                profile={profile}
+                cerrarSesion={cerrarSesion}
+              />
+            }
+          />
+
+          <Route
+            path="/estudiante/biblioteca/libro/:bookId"
+            element={
+              <StudentReader
+                profile={profile}
+                cerrarSesion={cerrarSesion}
+              />
+            }
+          />
+
+          <Route
+            path="/estudiante/biblioteca/certificado/:certificateId"
+            element={
+              <StudentCertificate />
+            }
+          />
+
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to="/"
+                replace
+              />
+            }
+          />
+
+        </Routes>
+
+      </BrowserRouter>
+    )
+  }
+
+  /*
+   * ============================
+   * TUTOR
+   * ============================
+   */
+
+  if (profile.role === 'tutor') {
+    return (
+      <BrowserRouter>
+
+        <Routes>
 
           <Route
             path="/"
@@ -308,46 +506,77 @@ function App() {
             }
           />
 
-          {/* SECCIÓN DEL TUTOR */}
-
           <Route
             path="/tutor/seccion/:sectionId"
             element={<TutorSection />}
           />
-
-          {/* REVISAR AGENDAS */}
 
           <Route
             path="/tutor/seccion/:sectionId/revisiones"
             element={<AgendaReviews />}
           />
 
-          {/* RANKING */}
-
           <Route
             path="/tutor/seccion/:sectionId/ranking"
             element={<Ranking />}
           />
-
-          {/* INCENTIVOS */}
 
           <Route
             path="/tutor/seccion/:sectionId/incentivos"
             element={<Incentives />}
           />
 
-          {/* RUTA DESCONOCIDA */}
-
           <Route
             path="*"
-            element={<Navigate to="/" replace />}
+            element={
+              <Navigate
+                to="/"
+                replace
+              />
+            }
           />
 
         </Routes>
 
-      )}
+      </BrowserRouter>
+    )
+  }
 
-    </BrowserRouter>
+  /*
+   * ============================
+   * ROL NO RECONOCIDO
+   * ============================
+   */
+
+  return (
+    <main className="login-page">
+      <section className="login-card">
+
+        <div className="login-header">
+
+          <div className="logo">
+            AE
+          </div>
+
+          <h1>
+            Agenda Escolar
+          </h1>
+
+          <p>
+            El rol de este usuario no está configurado.
+          </p>
+
+          <button
+            className="login-button"
+            onClick={cerrarSesion}
+          >
+            Cerrar sesión
+          </button>
+
+        </div>
+
+      </section>
+    </main>
   )
 }
 

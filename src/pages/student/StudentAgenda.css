@@ -1,0 +1,388 @@
+.student-agenda-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+}
+
+.student-agenda-header {
+  min-height: 86px;
+  padding: 0 34px;
+  background: white;
+  border-bottom: 1px solid #e3e8ef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.agenda-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.student-agenda-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: #2864e8;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(40, 100, 232, 0.18);
+}
+
+.student-agenda-header h1 {
+  margin: 0;
+  color: #17243a;
+  font-size: 25px;
+}
+
+.student-agenda-header p {
+  margin: 3px 0 0;
+  color: #6d7c91;
+  font-size: 14px;
+}
+
+.student-agenda-logout {
+  border: 1px solid #d6dde8;
+  background: white;
+  color: #26364d;
+  padding: 11px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.student-agenda-logout:hover {
+  background: #f5f7fa;
+}
+
+.student-agenda-content {
+  width: min(1180px, calc(100% - 40px));
+  margin: 38px auto 60px;
+}
+
+.agenda-top {
+  background: white;
+  border: 1px solid #e1e7ef;
+  border-radius: 18px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 8px 24px rgba(31, 48, 74, 0.05);
+}
+
+.agenda-label {
+  margin: 0 0 7px;
+  color: #2864e8;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.agenda-top h2 {
+  margin: 0;
+  color: #17243a;
+  font-size: 28px;
+}
+
+.agenda-student-code {
+  margin: 8px 0 0;
+  color: #718096;
+}
+
+.agenda-back-button {
+  border: none;
+  background: #2864e8;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.agenda-back-button:hover {
+  background: #1f56d0;
+}
+
+.agenda-summary,
+.agenda-history {
+  margin-top: 24px;
+  background: white;
+  border: 1px solid #e1e7ef;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 8px 24px rgba(31, 48, 74, 0.05);
+}
+
+.agenda-summary-header,
+.agenda-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.agenda-summary-header h2,
+.agenda-section-title h2 {
+  margin: 0;
+  color: #17243a;
+  font-size: 24px;
+}
+
+.agenda-percentage {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: #eef4ff;
+  color: #2864e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.agenda-stats {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.agenda-stat {
+  background: #f7f9fc;
+  border: 1px solid #e1e7ef;
+  border-radius: 14px;
+  padding: 22px;
+  text-align: center;
+}
+
+.agenda-stat-number {
+  display: block;
+  color: #14243c;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.agenda-stat-label {
+  display: block;
+  margin-top: 5px;
+  color: #6c7b90;
+  font-size: 14px;
+}
+
+.agenda-history-count {
+  color: #6c7b90;
+  font-size: 14px;
+}
+
+.agenda-review-list {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.agenda-review-item {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e1e7ef;
+  border-radius: 14px;
+  background: #fafbfd;
+}
+
+.agenda-status-icon {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.status-signed {
+  background: #e7f7ed;
+  color: #16834a;
+}
+
+.status-not-present {
+  background: #fff0f0;
+  color: #d33b3b;
+}
+
+.status-no-signature {
+  background: #fff6df;
+  color: #a66a00;
+}
+
+.status-other {
+  background: #edf1f7;
+  color: #617087;
+}
+
+.agenda-review-main {
+  flex: 1;
+}
+
+.agenda-review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.agenda-review-top h3 {
+  margin: 0;
+  color: #1d2b42;
+  font-size: 17px;
+}
+
+.agenda-review-top p {
+  margin: 5px 0 0;
+  color: #77869a;
+  font-size: 13px;
+}
+
+.agenda-status {
+  padding: 7px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.agenda-observation {
+  margin-top: 15px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #e7ebf1;
+}
+
+.agenda-observation strong {
+  color: #526277;
+  font-size: 13px;
+}
+
+.agenda-observation p {
+  margin: 5px 0 0;
+  color: #68778b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.agenda-empty,
+.student-agenda-loading {
+  text-align: center;
+  padding: 55px 20px;
+}
+
+.agenda-empty-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.agenda-empty h3 {
+  margin: 0;
+  color: #24334a;
+}
+
+.agenda-empty p {
+  max-width: 500px;
+  margin: 8px auto 0;
+  color: #758398;
+  line-height: 1.5;
+}
+
+.student-agenda-loading {
+  width: min(500px, calc(100% - 40px));
+  margin: 100px auto;
+  background: white;
+  border: 1px solid #e1e7ef;
+  border-radius: 18px;
+}
+
+.student-agenda-loading h1 {
+  color: #17243a;
+}
+
+.student-agenda-loading p {
+  color: #718096;
+}
+
+@media (max-width: 800px) {
+  .student-agenda-header {
+    padding: 15px 20px;
+  }
+
+  .student-agenda-logout {
+    padding: 9px 12px;
+  }
+
+  .student-agenda-content {
+    width: min(100% - 24px, 1180px);
+    margin-top: 20px;
+  }
+
+  .agenda-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .agenda-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .agenda-summary,
+  .agenda-history {
+    padding: 22px;
+  }
+
+  .agenda-review-top {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 500px) {
+  .student-agenda-header h1 {
+    font-size: 19px;
+  }
+
+  .student-agenda-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+  }
+
+  .agenda-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .agenda-stat {
+    padding: 15px 8px;
+  }
+
+  .agenda-stat-number {
+    font-size: 25px;
+  }
+
+  .agenda-summary-header h2,
+  .agenda-section-title h2 {
+    font-size: 20px;
+  }
+
+  .agenda-percentage {
+    width: 65px;
+    height: 65px;
+    font-size: 18px;
+  }
+}

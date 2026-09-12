@@ -1,0 +1,632 @@
+.student-certificate-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(
+      135deg,
+      #eef2f7 0%,
+      #f8fafc 50%,
+      #e8edf5 100%
+    );
+  padding: 32px 24px 60px;
+  box-sizing: border-box;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.certificate-actions {
+  width: min(1100px, 100%);
+  margin: 0 auto 24px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.certificate-back-button {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  background: #173574;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.certificate-back-button:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.certificate-download-button {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 20px;
+  background: #173574;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.certificate-download-button:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.certificate-download-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+/* =========================
+   CERTIFICADO
+========================= */
+
+.certificate-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.student-certificate {
+  width: min(1050px, 100%);
+  box-sizing: border-box;
+}
+
+.certificate-border {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 700px;
+  padding: 42px 70px 38px;
+  background: #ffffff;
+  border: 1px solid #d8c98a;
+
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.14),
+    0 4px 12px rgba(15, 23, 42, 0.08);
+
+  overflow: hidden;
+}
+
+.certificate-border::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 2px solid #d8c98a;
+  pointer-events: none;
+}
+
+.certificate-border::after {
+  content: '';
+  position: absolute;
+  inset: 21px;
+  border: 1px solid #eadfb0;
+  pointer-events: none;
+}
+
+/* =========================
+   ENCABEZADO
+========================= */
+
+.certificate-header {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+/*
+ * Logo horizontal oficial.
+ * Se respeta su proporción original.
+ */
+
+.certificate-school-logo {
+  width: 300px;
+  height: auto;
+  max-width: 70%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 6px;
+}
+
+/*
+ * Solo se usa como respaldo
+ * si no existe logo.
+ */
+
+.certificate-school-logo-placeholder {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #173574;
+  color: #ffffff;
+
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/*
+ * Ya no necesitamos mostrar
+ * "COLEGIO VANCOUVER" porque
+ * está dentro del logo.
+ */
+
+.certificate-school-name {
+  display: none;
+}
+
+.certificate-label {
+  margin: 2px 0 0;
+
+  color: #7a6b2c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+/* =========================
+   TÍTULO
+========================= */
+
+.certificate-title-section {
+  position: relative;
+  z-index: 1;
+
+  text-align: center;
+
+  margin-top: 30px;
+}
+
+.certificate-small-title {
+  margin: 0;
+
+  color: #7a6b2c;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 5px;
+}
+
+.certificate-title-section h1 {
+  margin: 8px 0 0;
+
+  color: #172554;
+
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.certificate-title-line {
+  width: 130px;
+  height: 3px;
+
+  margin: 18px auto 0;
+
+  background: #d8c98a;
+}
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.certificate-content {
+  position: relative;
+  z-index: 1;
+
+  text-align: center;
+
+  margin-top: 34px;
+}
+
+.certificate-intro {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 17px;
+}
+
+.certificate-student-name {
+  margin: 13px 0 0;
+
+  color: #172554;
+
+  font-size: clamp(25px, 3.5vw, 38px);
+  line-height: 1.2;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+.certificate-description {
+  max-width: 680px;
+
+  margin: 18px auto 0;
+
+  color: #475569;
+
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.certificate-book-title {
+  margin: 15px auto 0;
+
+  color: #173574;
+
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.certificate-book-author {
+  margin: 7px 0 0;
+
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* =========================
+   DATOS
+========================= */
+
+.certificate-data-grid {
+  max-width: 800px;
+
+  margin: 32px auto 0;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 16px;
+}
+
+.certificate-data-item {
+  min-height: 82px;
+
+  padding: 15px 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.certificate-data-item span {
+  color: #64748b;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.certificate-data-item strong {
+  margin-top: 7px;
+
+  color: #173574;
+
+  font-size: 17px;
+  font-weight: 800;
+}
+
+/* =========================
+   PIE
+========================= */
+
+.certificate-footer {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 36px;
+
+  display: grid;
+
+  /*
+   * Dejamos espacio para:
+   * firma | código | QR
+   */
+  grid-template-columns:
+    1fr
+    1fr
+    90px;
+
+  gap: 30px;
+
+  align-items: end;
+}
+
+.certificate-signature {
+  text-align: center;
+
+  max-width: 280px;
+
+  margin: 0 auto;
+}
+
+.certificate-signature-line {
+  width: 220px;
+  max-width: 100%;
+
+  height: 1px;
+
+  margin: 0 auto 9px;
+
+  background: #64748b;
+}
+
+.certificate-signature strong {
+  display: block;
+
+  color: #334155;
+  font-size: 14px;
+}
+
+.certificate-signature span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================
+   CÓDIGO
+========================= */
+
+.certificate-code {
+  text-align: center;
+
+  max-width: 280px;
+
+  margin: 0 auto;
+}
+
+.certificate-code span {
+  display: block;
+
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.certificate-code strong {
+  display: block;
+
+  margin-top: 7px;
+
+  color: #173574;
+
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+/* =========================
+   QR
+========================= */
+
+.certificate-qr {
+  width: 70px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 3px;
+
+  margin: 0 auto;
+}
+
+.certificate-qr img {
+  width: 58px;
+  height: 58px;
+
+  display: block;
+}
+
+.certificate-qr span {
+  color: #64748b;
+
+  font-size: 7px;
+  line-height: 1.2;
+
+  text-align: center;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   CARGANDO / ERROR
+========================= */
+
+.student-certificate-loading,
+.student-certificate-error {
+  width: min(600px, 100%);
+
+  margin: 100px auto;
+
+  padding: 50px 30px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  text-align: center;
+
+  box-shadow:
+    0 15px 40px rgba(15, 23, 42, 0.12);
+}
+
+.certificate-loading-icon,
+.certificate-error-icon {
+  font-size: 44px;
+  margin-bottom: 15px;
+}
+
+.student-certificate-loading h2,
+.student-certificate-error h2 {
+  margin: 0;
+
+  color: #172554;
+
+  font-size: 24px;
+}
+
+.student-certificate-loading p,
+.student-certificate-error p {
+  margin: 12px 0 25px;
+
+  color: #64748b;
+
+  line-height: 1.5;
+}
+
+/* =========================
+   TABLET / MÓVIL
+========================= */
+
+@media (max-width: 768px) {
+  .student-certificate-page {
+    padding: 20px 12px 40px;
+  }
+
+  .certificate-border {
+    min-height: auto;
+
+    padding: 35px 28px 35px;
+  }
+
+  .certificate-school-logo {
+    width: 240px;
+    max-width: 80%;
+  }
+
+  .certificate-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  .certificate-title-section {
+    margin-top: 28px;
+  }
+
+  .certificate-content {
+    margin-top: 28px;
+  }
+
+  .certificate-data-grid {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+
+    margin-top: 26px;
+  }
+
+  .certificate-footer {
+    grid-template-columns: 1fr;
+
+    gap: 25px;
+
+    margin-top: 30px;
+  }
+
+  .certificate-description {
+    font-size: 15px;
+  }
+
+  .certificate-book-title {
+    font-size: 25px;
+  }
+
+  .certificate-qr {
+    margin: 0 auto;
+  }
+}
+
+/* =========================
+   PANTALLAS PEQUEÑAS
+========================= */
+
+@media (max-width: 600px) {
+  .certificate-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .certificate-back-button,
+  .certificate-download-button {
+    width: 100%;
+  }
+
+  .certificate-school-logo {
+    width: 210px;
+    max-width: 90%;
+  }
+}
+
+/* =========================
+   IMPRESIÓN
+========================= */
+
+@media print {
+  .student-certificate-page {
+    min-height: auto;
+
+    padding: 0;
+
+    background: #ffffff;
+  }
+
+  .certificate-actions {
+    display: none;
+  }
+
+  .student-certificate {
+    width: 100%;
+  }
+
+  .certificate-border {
+    box-shadow: none;
+  }
+}

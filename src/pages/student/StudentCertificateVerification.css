@@ -1,0 +1,566 @@
+.certificate-verification-page {
+
+  min-height: 100vh;
+
+  box-sizing: border-box;
+
+  padding: 50px 20px 70px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eef2f7 0%,
+      #f8fafc 50%,
+      #e8edf5 100%
+    );
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.certificate-verification-card {
+
+  width: min(760px, 100%);
+
+  box-sizing: border-box;
+
+  padding: 48px 52px;
+
+  background: #ffffff;
+
+  border: 1px solid #d8c98a;
+
+  box-shadow:
+    0 20px 50px rgba(
+      15,
+      23,
+      42,
+      0.12
+    );
+
+  position: relative;
+}
+
+.certificate-verification-card::before {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 12px;
+
+  border: 1px solid #eadfb0;
+
+  pointer-events: none;
+}
+
+.verification-header {
+
+  position: relative;
+
+  z-index: 1;
+
+  text-align: center;
+}
+
+.verification-check-icon {
+
+  width: 68px;
+
+  height: 68px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #173574;
+
+  color: #ffffff;
+
+  font-size: 34px;
+
+  font-weight: 800;
+}
+
+.verification-label {
+
+  margin: 0;
+
+  color: #7a6b2c;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 3px;
+}
+
+.verification-header h1 {
+
+  margin: 10px 0 0;
+
+  color: #172554;
+
+  font-size: 36px;
+
+  line-height: 1.15;
+
+  font-weight: 800;
+}
+
+.verification-message {
+
+  max-width: 560px;
+
+  margin: 14px auto 0;
+
+  color: #64748b;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+}
+
+.verification-divider {
+
+  width: 90px;
+
+  height: 2px;
+
+  margin: 28px auto;
+
+  background: #d8c98a;
+
+  position: relative;
+
+  z-index: 1;
+}
+
+.verification-school {
+
+  position: relative;
+
+  z-index: 1;
+
+  text-align: center;
+
+  margin-bottom: 34px;
+}
+
+.verification-school strong {
+
+  display: block;
+
+  color: #173574;
+
+  font-size: 20px;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+.verification-school span {
+
+  display: block;
+
+  margin-top: 5px;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.verification-student,
+
+.verification-book {
+
+  position: relative;
+
+  z-index: 1;
+
+  text-align: center;
+
+  padding: 22px 20px;
+
+  border: 1px solid #e2e8f0;
+
+  background: #f8fafc;
+
+  margin-top: 14px;
+}
+
+.verification-student > span,
+
+.verification-book > span {
+
+  display: block;
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.verification-student h2 {
+
+  margin: 9px 0 0;
+
+  color: #172554;
+
+  font-size: 25px;
+
+  line-height: 1.25;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+.verification-book h3 {
+
+  margin: 9px 0 0;
+
+  color: #173574;
+
+  font-size: 23px;
+
+  line-height: 1.3;
+
+  font-weight: 700;
+}
+
+.verification-book p {
+
+  margin: 7px 0 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.verification-data-grid {
+
+  position: relative;
+
+  z-index: 1;
+
+  margin-top: 22px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 12px;
+}
+
+.verification-data-item {
+
+  min-height: 78px;
+
+  padding: 14px 10px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e2e8f0;
+
+  background: #ffffff;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+.verification-data-item span {
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.7px;
+}
+
+.verification-data-item strong {
+
+  margin-top: 7px;
+
+  color: #173574;
+
+  font-size: 15px;
+
+  font-weight: 800;
+}
+
+.verification-footer {
+
+  position: relative;
+
+  z-index: 1;
+
+  margin-top: 28px;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 20px;
+
+  align-items: center;
+}
+
+.verification-validity {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  color: #334155;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.verification-validity-dot {
+
+  width: 9px;
+
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #173574;
+
+  display: block;
+}
+
+.verification-code-box {
+
+  position: relative;
+
+  z-index: 1;
+
+  padding: 13px 16px;
+
+  border: 1px solid #e2e8f0;
+
+  background: #f8fafc;
+
+  text-align: center;
+}
+
+.verification-code-box span {
+
+  display: block;
+
+  color: #64748b;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+.verification-code-box strong {
+
+  display: block;
+
+  margin-top: 5px;
+
+  color: #173574;
+
+  font-size: 13px;
+
+  letter-spacing: 1px;
+}
+
+.verification-notice {
+
+  position: relative;
+
+  z-index: 1;
+
+  margin-top: 25px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid #e2e8f0;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+
+  text-align: center;
+}
+
+.verification-loading-icon {
+
+  width: 58px;
+
+  height: 58px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  border: 4px solid #e2e8f0;
+
+  border-top-color: #173574;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #173574;
+
+  font-size: 25px;
+
+  animation:
+    verification-spin
+    1s linear infinite;
+}
+
+.certificate-verification-card
+.certificate-verification-invalid {
+
+  text-align: center;
+}
+
+.verification-status-icon {
+
+  width: 68px;
+
+  height: 68px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #64748b;
+
+  color: #ffffff;
+
+  font-size: 30px;
+
+  font-weight: 800;
+}
+
+.certificate-verification-invalid h1 {
+
+  margin: 10px 0 0;
+
+  color: #172554;
+
+  font-size: 32px;
+
+  font-weight: 800;
+}
+
+.certificate-verification-invalid
+.verification-message {
+
+  max-width: 500px;
+
+  margin: 15px auto 0;
+}
+
+.certificate-verification-invalid
+.verification-code-box {
+
+  max-width: 360px;
+
+  margin: 25px auto 0;
+}
+
+@keyframes verification-spin {
+
+  from {
+    transform:
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+@media (max-width: 650px) {
+
+  .certificate-verification-page {
+
+    padding: 25px 12px 40px;
+  }
+
+  .certificate-verification-card {
+
+    padding: 38px 25px;
+  }
+
+  .verification-header h1 {
+
+    font-size: 29px;
+  }
+
+  .verification-student h2 {
+
+    font-size: 21px;
+  }
+
+  .verification-book h3 {
+
+    font-size: 20px;
+  }
+
+  .verification-data-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+  .verification-footer {
+
+    grid-template-columns: 1fr;
+  }
+}
