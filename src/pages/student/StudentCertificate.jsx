@@ -194,12 +194,8 @@ function StudentCertificate() {
       return ''
     }
 
-    const baseUrl =
-      (import.meta.env.VITE_PUBLIC_APP_URL ||
-        window.location.origin).replace(/\/$/, '')
-
     return (
-      `${baseUrl}` +
+      `${window.location.origin}` +
       `/verificar-certificado/` +
       `${encodeURIComponent(
         certificado.certificate_code
@@ -222,15 +218,16 @@ function StudentCertificate() {
       return null
     }
 
+    let objectUrl = null
+
     try {
-      const respuesta =
-        await fetch(
-          url,
-          {
-            mode: 'cors',
-            cache: 'no-cache',
-          }
-        )
+      const respuesta = await fetch(
+        url,
+        {
+          mode: 'cors',
+          cache: 'no-cache',
+        }
+      )
 
       if (!respuesta.ok) {
         throw new Error(
@@ -238,44 +235,103 @@ function StudentCertificate() {
         )
       }
 
-      const blob =
-        await respuesta.blob()
+      const blob = await respuesta.blob()
 
-      if (
-        !blob.type.startsWith(
-          'image/'
-        )
-      ) {
+      if (!blob.type.startsWith('image/')) {
         throw new Error(
           `El archivo no es una imagen válida. Tipo: ${blob.type}`
         )
       }
 
-      const dataURL =
-        await new Promise(
-          (resolve, reject) => {
-            const lector =
-              new FileReader()
+      objectUrl = URL.createObjectURL(blob)
 
-            lector.onload = () => {
-              resolve(
-                lector.result
+      const dataURL = await new Promise(
+        (resolve, reject) => {
+          const imagen = new Image()
+
+          imagen.onload = () => {
+            try {
+              const maxAncho = 1000
+              const maxAlto = 500
+
+              let ancho = imagen.naturalWidth || imagen.width
+              let alto = imagen.naturalHeight || imagen.height
+
+              if (!ancho || !alto) {
+                throw new Error(
+                  'No se pudo obtener el tamaño del logo.'
+                )
+              }
+
+              const escala = Math.min(
+                1,
+                maxAncho / ancho,
+                maxAlto / alto
               )
-            }
 
-            lector.onerror = () => {
-              reject(
-                new Error(
-                  'No se pudo convertir el logo.'
+              ancho = Math.max(
+                1,
+                Math.round(ancho * escala)
+              )
+
+              alto = Math.max(
+                1,
+                Math.round(alto * escala)
+              )
+
+              const canvas =
+                document.createElement('canvas')
+
+              canvas.width = ancho
+              canvas.height = alto
+
+              const contexto =
+                canvas.getContext('2d')
+
+              if (!contexto) {
+                throw new Error(
+                  'No se pudo crear el contexto del logo.'
+                )
+              }
+
+              contexto.fillStyle = '#ffffff'
+              contexto.fillRect(
+                0,
+                0,
+                ancho,
+                alto
+              )
+
+              contexto.drawImage(
+                imagen,
+                0,
+                0,
+                ancho,
+                alto
+              )
+
+              resolve(
+                canvas.toDataURL(
+                  'image/jpeg',
+                  0.82
                 )
               )
+            } catch (err) {
+              reject(err)
             }
+          }
 
-            lector.readAsDataURL(
-              blob
+          imagen.onerror = () => {
+            reject(
+              new Error(
+                'No se pudo cargar la imagen del logo.'
+              )
             )
           }
-        )
+
+          imagen.src = objectUrl
+        }
+      )
 
       return dataURL
     } catch (err) {
@@ -285,6 +341,10 @@ function StudentCertificate() {
       )
 
       return null
+    } finally {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl)
+      }
     }
   }
 
@@ -456,7 +516,7 @@ function StudentCertificate() {
 
           pdf.addImage(
             logoDataURL,
-            'PNG',
+            'JPEG',
             ancho / 2 -
               logoAncho / 2,
             15,
