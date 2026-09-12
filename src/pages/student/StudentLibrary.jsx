@@ -20,6 +20,10 @@ function StudentLibrary({ profile, cerrarSesion }) {
   const [prestamos, setPrestamos] = useState({})
   const [historialLecturas, setHistorialLecturas] =
     useState({})
+
+  const [progresosLectura, setProgresosLectura] =
+    useState({})
+
   const [librosPrestados, setLibrosPrestados] =
     useState(new Set())
 
@@ -214,6 +218,7 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
       if (loanIds.length === 0) {
         setHistorialLecturas({})
+        setProgresosLectura({})
         return
       }
 
@@ -223,6 +228,7 @@ function StudentLibrary({ profile, cerrarSesion }) {
       } = await supabase
         .from('library_reading_progress')
         .select(`
+          id,
           loan_id,
           current_page,
           total_pages,
@@ -241,8 +247,17 @@ function StudentLibrary({ profile, cerrarSesion }) {
         )
 
         setHistorialLecturas({})
+        setProgresosLectura({})
         return
       }
+
+      const progresoMap = {}
+
+      for (const progreso of progresos || []) {
+        progresoMap[progreso.loan_id] = progreso
+      }
+
+      setProgresosLectura(progresoMap)
 
       const historialMap = {}
 
@@ -912,14 +927,19 @@ function StudentLibrary({ profile, cerrarSesion }) {
    * =========================
    */
 
+  const librosEnLecturaIds =
+    new Set(
+      Object.keys(prestamos)
+    )
+
   const misLecturas =
     libros.filter((libro) =>
-      Boolean(prestamos[libro.id])
+      librosEnLecturaIds.has(libro.id)
     )
 
   const librosDisponiblesCatalogo =
     libros.filter((libro) =>
-      !prestamos[libro.id]
+      !librosEnLecturaIds.has(libro.id)
     )
 
   const librosFiltrados =
@@ -1078,16 +1098,21 @@ function StudentLibrary({ profile, cerrarSesion }) {
                 const prestamo =
                   prestamos[libro.id]
 
-                const lecturaCompletada =
-                  historialLecturas[libro.id]
+                const progresoLectura =
+                  progresosLectura[
+                    prestamo.id
+                  ]
 
                 const progreso =
-                  lecturaCompletada &&
-                  Number(
-                    lecturaCompletada.progress_percent
-                  ) >= 100
-                    ? 100
-                    : 0
+                  Math.min(
+                    100,
+                    Math.max(
+                      0,
+                      Number(
+                        progresoLectura?.progress_percent
+                      ) || 0
+                    )
+                  )
 
                 return (
                   <article
@@ -1157,18 +1182,24 @@ function StudentLibrary({ profile, cerrarSesion }) {
                         )}
                       </p>
 
-                      {progreso === 100 ? (
-                        <p className="library-reading-status">
-                          Lectura completada ·{' '}
-                          {formatearTiempo(
-                            lecturaCompletada.reading_seconds
-                          )}
-                        </p>
-                      ) : (
-                        <p className="library-reading-status">
-                          Libro disponible para continuar leyendo.
-                        </p>
-                      )}
+                      <p className="library-reading-status">
+                        {progreso >= 100
+                          ? `Lectura completada · ${formatearTiempo(
+                              progresoLectura?.reading_seconds
+                            )}`
+                          : `Progreso: ${Math.round(
+                              progreso
+                            )}% · Página ${
+                              progresoLectura?.current_page ||
+                              1
+                            } de ${
+                              progresoLectura?.total_pages ||
+                              libro.pages ||
+                              1
+                            } · Tiempo: ${formatearTiempo(
+                              progresoLectura?.reading_seconds
+                            )}`}
+                      </p>
 
                       <button
                         className="library-read-button"
@@ -1260,6 +1291,9 @@ function StudentLibrary({ profile, cerrarSesion }) {
               {librosFiltrados.length === 1
                 ? 'libro'
                 : 'libros'}
+              {!hayFiltroActivo &&
+                librosFiltrados.length > 8 &&
+                ' · mostrando 8'}
             </span>
 
           </div>
@@ -1301,7 +1335,8 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
           )}
 
-          {loading ? (
+          {loading && (
+
 
             <div className="library-empty">
 
@@ -1319,7 +1354,11 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
             </div>
 
-          ) : error ? (
+
+          )}
+
+          {!loading && error && (
+
 
             <div className="library-empty">
 
@@ -1344,7 +1383,13 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
             </div>
 
-          ) : librosFiltrados.length === 0 ? (
+
+          )}
+
+          {!loading &&
+            !error &&
+            librosFiltrados.length === 0 && (
+
 
             <div className="library-empty">
 
@@ -1362,7 +1407,14 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
             </div>
 
-          ) : (
+
+          )}
+
+          {!loading &&
+            !error &&
+            librosFiltrados.length > 0 && (
+            <>
+
 
             <div className="library-books-grid">
 
@@ -1511,17 +1563,6 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
                         )}
 
-                        {tienePrestamo && (
-
-                          <p className="library-book-pages">
-                            Préstamo activo · Vence:{' '}
-                            {obtenerTextoVencimiento(
-                              prestamo.due_at
-                            )}
-                          </p>
-
-                        )}
-
                         {tieneLecturaCompletada && (
 
                           <p className="library-book-pages">
@@ -1537,59 +1578,7 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
                         )}
 
-                        {tienePrestamo ? (
-
-                          <div className="library-loan-actions">
-
-                            <button
-                              className="library-read-button"
-                              disabled={
-                                !libro.pdf_url ||
-                                prestando ||
-                                loadingPrestamos
-                              }
-                              onClick={() =>
-                                abrirLector(
-                                  libro.id
-                                )
-                              }
-                            >
-                              Continuar leyendo
-                            </button>
-
-                            <button
-                              className="library-return-button"
-                              disabled={
-                                prestando ||
-                                loadingPrestamos
-                              }
-                              onClick={() =>
-                                devolverLibro(
-                                  libro
-                                )
-                              }
-                            >
-                              Devolver libro
-                            </button>
-
-                            {tieneCertificado && (
-
-                              <button
-                                className="library-read-button"
-                                onClick={() =>
-                                  verCertificado(
-                                    libro
-                                  )
-                                }
-                              >
-                                Ver certificado
-                              </button>
-
-                            )}
-
-                          </div>
-
-                        ) : prestadoPorOtro ? (
+                        {prestadoPorOtro ? (
 
                           <div className="library-unavailable-book">
 
@@ -1656,7 +1645,10 @@ function StudentLibrary({ profile, cerrarSesion }) {
                 </div>
               )}
 
+
+            </>
           )}
+
 
         </section>
 
