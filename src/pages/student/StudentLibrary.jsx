@@ -1215,6 +1215,24 @@ function StudentLibrary({ profile, cerrarSesion }) {
                       >
                         Continuar leyendo
                       </button>
+
+                      <button
+                        type="button"
+                        className="library-read-button library-return-button"
+                        disabled={
+                          prestandoId === libro.id ||
+                          loadingPrestamos
+                        }
+                        onClick={() =>
+                          devolverLibro(
+                            libro
+                          )
+                        }
+                      >
+                        {prestandoId === libro.id
+                          ? 'Procesando...'
+                          : 'Devolver libro'}
+                      </button>
                     </div>
                   </article>
                 )
