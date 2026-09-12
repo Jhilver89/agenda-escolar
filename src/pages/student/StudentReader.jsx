@@ -12,7 +12,7 @@ import {
   pdfjs,
 } from 'react-pdf'
 
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 
 import './StudentReader.css'
@@ -76,9 +76,6 @@ function StudentReader({
   const [readingActive, setReadingActive] =
     useState(false)
 
-  const [readingCompleted, setReadingCompleted] =
-    useState(false)
-
   const readingSecondsRef =
     useRef(0)
 
@@ -88,8 +85,8 @@ function StudentReader({
   const lastSavedSecondsRef =
     useRef(0)
 
-  const completedAtRef =
-    useRef(null)
+  const lastSaveTimeRef =
+    useRef(Date.now())
 
   /*
    * =========================
@@ -111,7 +108,6 @@ function StudentReader({
         setError(
           'No se recibió el identificador del libro.'
         )
-
         return
       }
 
@@ -119,7 +115,6 @@ function StudentReader({
         setError(
           'No se pudo identificar al estudiante.'
         )
-
         return
       }
 
@@ -308,37 +303,18 @@ function StudentReader({
 
         lastSavedSecondsRef.current =
           tiempoGuardado
-
-        /*
-         * Recuperar estado de finalización.
-         */
-
-        const estaCompletado =
-          progreso.status === 'completed' ||
-          Number(
-            progreso.progress_percent
-          ) >= 100
-
-        setReadingCompleted(
-          estaCompletado
-        )
-
-        completedAtRef.current =
-          progreso.completed_at || null
-
       } else {
         setReadingSeconds(0)
 
         readingSecondsRef.current = 0
 
         lastSavedSecondsRef.current = 0
-
-        setReadingCompleted(false)
-
-        completedAtRef.current = null
       }
 
       lastActivityRef.current =
+        Date.now()
+
+      lastSaveTimeRef.current =
         Date.now()
 
     } catch (err) {
@@ -412,14 +388,7 @@ function StudentReader({
     lastActivityRef.current =
       Date.now()
 
-    /*
-     * Si el libro ya estaba completado,
-     * no iniciamos una nueva sesión de lectura.
-     */
-
-    if (!readingCompleted) {
-      setReadingActive(true)
-    }
+    setReadingActive(true)
   }
 
   function onDocumentLoadError(err) {
@@ -466,43 +435,13 @@ function StudentReader({
           ) / 100
         )
 
-      const lecturaCompletada =
-        nuevaPagina >= numPages
-
       const ahora =
         new Date().toISOString()
 
-      /*
-       * Si acaba de completar la lectura,
-       * registramos una sola fecha de culminación.
-       */
-
-      if (
-        lecturaCompletada &&
-        !completedAtRef.current
-      ) {
-        completedAtRef.current =
-          ahora
-
-        setReadingCompleted(true)
-
-        setReadingActive(false)
-      }
-
-      const fechaCompletado =
-        completedAtRef.current
-
-      const estado =
-        lecturaCompletada ||
-        readingCompleted
-          ? 'completed'
-          : 'reading'
-
       try {
         /*
-         * =========================
-         * ACTUALIZAR PROGRESO
-         * =========================
+         * Si ya existe el registro,
+         * lo actualizamos.
          */
 
         if (progressId) {
@@ -533,12 +472,6 @@ function StudentReader({
               last_read_at:
                 ahora,
 
-              completed_at:
-                fechaCompletado,
-
-              status:
-                estado,
-
               updated_at:
                 ahora,
             })
@@ -561,13 +494,15 @@ function StudentReader({
               segundos
             )
 
+          lastSaveTimeRef.current =
+            Date.now()
+
           return
         }
 
         /*
-         * =========================
-         * CREAR PROGRESO
-         * =========================
+         * Si todavía no existe,
+         * intentamos crearlo.
          */
 
         const {
@@ -605,10 +540,10 @@ function StudentReader({
               ahora,
 
             completed_at:
-              fechaCompletado,
+              null,
 
             status:
-              estado,
+              'reading',
           })
           .select(`
             id
@@ -633,6 +568,9 @@ function StudentReader({
             segundos
           )
 
+        lastSaveTimeRef.current =
+          Date.now()
+
       } catch (err) {
         console.error(
           'ERROR INESPERADO AL GUARDAR PROGRESO:',
@@ -645,7 +583,6 @@ function StudentReader({
       numPages,
       pageNumber,
       progressId,
-      readingCompleted,
     ]
   )
 
@@ -657,10 +594,6 @@ function StudentReader({
 
   const registrarActividad =
     useCallback(() => {
-      if (readingCompleted) {
-        return
-      }
-
       lastActivityRef.current =
         Date.now()
 
@@ -675,7 +608,6 @@ function StudentReader({
       pdfLoading,
       pdfError,
       progressLoading,
-      readingCompleted,
     ])
 
   /*
@@ -728,14 +660,11 @@ function StudentReader({
           pageNumber,
           readingSecondsRef.current
         )
-
       } else {
-
         lastActivityRef.current =
           Date.now()
 
         if (
-          !readingCompleted &&
           !pdfLoading &&
           !pdfError &&
           !progressLoading
@@ -762,7 +691,6 @@ function StudentReader({
     pdfError,
     pdfLoading,
     progressLoading,
-    readingCompleted,
   ])
 
   /*
@@ -777,8 +705,7 @@ function StudentReader({
       pdfError ||
       progressLoading ||
       !loanId ||
-      !numPages ||
-      readingCompleted
+      !numPages
     ) {
       return
     }
@@ -835,7 +762,6 @@ function StudentReader({
             readingSecondsRef.current
           )
         }
-
       }, 1000)
 
     return () => {
@@ -849,7 +775,6 @@ function StudentReader({
     pdfLoading,
     progressLoading,
     guardarProgreso,
-    readingCompleted,
   ])
 
   /*
@@ -990,8 +915,7 @@ function StudentReader({
       readingSecondsRef.current
     )
 
-    window.location.href =
-      '/estudiante/biblioteca'
+    navigate('/estudiante/biblioteca')
   }
 
   /*
@@ -1201,11 +1125,9 @@ function StudentReader({
             </span>
 
             <strong>
-              {readingCompleted
-                ? 'Lectura completada'
-                : readingActive
-                  ? 'Leyendo'
-                  : 'En pausa'}
+              {readingActive
+                ? 'Leyendo'
+                : 'En pausa'}
             </strong>
           </div>
         </div>
@@ -1353,8 +1275,7 @@ function StudentReader({
               pageNumber >= numPages ||
               pdfLoading ||
               !!pdfError ||
-              progressLoading ||
-              readingCompleted
+              progressLoading
             }
           >
             Página siguiente →
