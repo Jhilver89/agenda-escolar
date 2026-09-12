@@ -499,7 +499,7 @@ function StudentReader({
    */
 
   function iniciarArrastrePdf(event) {
-    if (event.button !== 0) {
+    if (event.pointerType === 'mouse' && event.button !== 0) {
       return
     }
 
@@ -522,6 +522,12 @@ function StudentReader({
     contenedor.classList.add(
       'reader-pdf-dragging'
     )
+
+    try {
+      contenedor.setPointerCapture(event.pointerId)
+    } catch {
+      // Algunos navegadores pueden no admitir captura del puntero.
+    }
 
     event.preventDefault()
   }
@@ -553,11 +559,9 @@ function StudentReader({
     contenedor.scrollTop =
       dragStartRef.current.scrollTop -
       desplazamientoY
-
-    event.preventDefault()
   }
 
-  function terminarArrastrePdf() {
+  function terminarArrastrePdf(event) {
     const contenedor =
       pdfContainerRef.current
 
@@ -567,22 +571,18 @@ function StudentReader({
       contenedor.classList.remove(
         'reader-pdf-dragging'
       )
+
+      if (event?.pointerId !== undefined) {
+        try {
+          if (contenedor.hasPointerCapture(event.pointerId)) {
+            contenedor.releasePointerCapture(event.pointerId)
+          }
+        } catch {
+          // El puntero puede haberse liberado automáticamente.
+        }
+      }
     }
   }
-
-  useEffect(() => {
-    window.addEventListener(
-      'mouseup',
-      terminarArrastrePdf
-    )
-
-    return () => {
-      window.removeEventListener(
-        'mouseup',
-        terminarArrastrePdf
-      )
-    }
-  }, [])
 
   /*
    * =========================
@@ -1446,10 +1446,10 @@ function StudentReader({
             <div
               ref={pdfContainerRef}
               className="reader-pdf-container"
-              onMouseDown={iniciarArrastrePdf}
-              onMouseMove={moverPdf}
-              onMouseUp={terminarArrastrePdf}
-              onMouseLeave={terminarArrastrePdf}
+              onPointerDown={iniciarArrastrePdf}
+              onPointerMove={moverPdf}
+              onPointerUp={terminarArrastrePdf}
+              onPointerCancel={terminarArrastrePdf}
             >
 
               {(pdfLoading ||
