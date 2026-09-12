@@ -749,7 +749,8 @@ function StudentReader({
       pdfError ||
       progressLoading ||
       !loanId ||
-      !numPages
+      !numPages ||
+      readingCompleted
     ) {
       return
     }
@@ -880,12 +881,12 @@ function StudentReader({
 
     if (!readingCompleted) {
       registrarActividad()
-    }
 
-    guardarProgreso(
-      nuevaPagina,
-      readingSecondsRef.current
-    )
+      guardarProgreso(
+        nuevaPagina,
+        readingSecondsRef.current
+      )
+    }
   }
 
   function paginaSiguiente() {
@@ -901,12 +902,12 @@ function StudentReader({
 
     if (!readingCompleted) {
       registrarActividad()
-    }
 
-    guardarProgreso(
-      nuevaPagina,
-      readingSecondsRef.current
-    )
+      guardarProgreso(
+        nuevaPagina,
+        readingSecondsRef.current
+      )
+    }
   }
 
   /*
