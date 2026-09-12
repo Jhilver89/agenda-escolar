@@ -167,6 +167,136 @@
   color: white;
 }
 
+/* =========================================================
+   MIS LECTURAS
+   ========================================================= */
+
+.library-reading-section {
+  margin-top: 24px;
+  background: #ffffff;
+  border: 1px solid #dbe5f2;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 8px 24px rgba(31, 48, 74, 0.06);
+}
+
+.library-reading-description {
+  margin: 7px 0 0;
+  color: #718096;
+  font-size: 14px;
+}
+
+.library-reading-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.library-reading-card {
+  display: flex;
+  gap: 20px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #dce5f0;
+  border-radius: 15px;
+  background: #f8faff;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.library-reading-card:hover {
+  transform: translateY(-3px);
+  border-color: #c8d7eb;
+  box-shadow: 0 10px 24px rgba(31, 48, 74, 0.08);
+}
+
+.library-reading-cover {
+  flex: 0 0 130px;
+  width: 130px;
+  height: 185px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #eef3fa;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.library-reading-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.library-reading-cover .library-pdf-cover {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.library-reading-cover .library-pdf-cover canvas {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+}
+
+.library-reading-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.library-reading-badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 12px;
+  background: #e9f0ff;
+  color: #2864e8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.library-reading-info h3 {
+  margin: 10px 0 5px;
+  color: #1b2a41;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.library-reading-info .library-book-author {
+  margin: 0;
+}
+
+.library-reading-due {
+  margin: 12px 0 0;
+  color: #718096;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.library-reading-status {
+  margin: 8px 0 15px;
+  color: #5d6c80;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.library-reading-info .library-read-button {
+  margin-top: auto;
+}
+
+/* =========================================================
+   CATÁLOGO
+   ========================================================= */
+
 .library-books-section {
   margin-top: 24px;
   background: white;
@@ -288,6 +418,13 @@
   line-height: 1.5;
 }
 
+.library-book-pages {
+  margin: 8px 0;
+  color: #718096;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .library-read-button {
   width: 100%;
   border: none;
@@ -302,6 +439,45 @@
 .library-read-button:hover {
   background: #1f56d0;
 }
+
+.library-read-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.library-load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.library-load-more-button {
+  border: 1px solid #2864e8;
+  background: #ffffff;
+  color: #2864e8;
+  padding: 11px 28px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.library-load-more-button:hover {
+  background: #2864e8;
+  color: #ffffff;
+}
+
+.library-load-more-button:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   ESTADO VACÍO
+   ========================================================= */
 
 .library-empty {
   text-align: center;
@@ -323,95 +499,10 @@
   color: #758398;
 }
 
-@media (max-width: 1050px) {
-  .library-books-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
+/* =========================================================
+   PRÉSTAMOS
+   ========================================================= */
 
-@media (max-width: 800px) {
-  .student-library-header {
-    padding: 15px 20px;
-  }
-
-  .student-library-content {
-    width: min(100% - 24px, 1180px);
-    margin-top: 20px;
-  }
-
-  .library-top {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .library-books-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .library-books-section {
-    padding: 22px;
-  }
-}
-
-@media (max-width: 520px) {
-  .student-library-header h1 {
-    font-size: 19px;
-  }
-
-  .student-library-logo {
-    width: 46px;
-    height: 46px;
-    border-radius: 13px;
-  }
-
-  .student-library-logout {
-    padding: 9px 12px;
-  }
-
-  .library-top {
-    padding: 23px;
-  }
-
-  .library-top h2 {
-    font-size: 24px;
-  }
-
-  .library-books-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .library-book-cover {
-    height: 260px;
-  }
-}
-.library-loan-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.library-return-button {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #374151;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.library-return-button:hover:not(:disabled) {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-}
-
-.library-return-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 .library-loan-actions {
   display: flex;
   flex-direction: column;
@@ -462,4 +553,124 @@
   margin-top: 4px;
   color: #9ca3af;
   font-size: 13px;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .library-books-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .library-reading-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   TABLET PEQUEÑA
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .student-library-header {
+    padding: 15px 20px;
+  }
+
+  .student-library-content {
+    width: min(100% - 24px, 1180px);
+    margin-top: 20px;
+  }
+
+  .library-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .library-books-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .library-books-section {
+    padding: 22px;
+  }
+
+  .library-reading-section {
+    padding: 22px;
+  }
+
+  .library-reading-card {
+    gap: 15px;
+  }
+
+  .library-reading-cover {
+    flex-basis: 110px;
+    width: 110px;
+    height: 160px;
+  }
+}
+
+/* =========================================================
+   CELULAR
+   ========================================================= */
+
+@media (max-width: 520px) {
+  .student-library-header h1 {
+    font-size: 19px;
+  }
+
+  .student-library-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+  }
+
+  .student-library-logout {
+    padding: 9px 12px;
+  }
+
+  .library-top {
+    padding: 23px;
+  }
+
+  .library-top h2 {
+    font-size: 24px;
+  }
+
+  .library-books-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .library-book-cover {
+    height: 260px;
+  }
+
+  .library-reading-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .library-reading-card {
+    flex-direction: column;
+  }
+
+  .library-reading-cover {
+    width: 100%;
+    height: 260px;
+    flex-basis: auto;
+  }
+
+  .library-reading-info {
+    width: 100%;
+  }
+
+  .library-reading-info .library-read-button {
+    margin-top: 8px;
+  }
+
+  .library-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
 }

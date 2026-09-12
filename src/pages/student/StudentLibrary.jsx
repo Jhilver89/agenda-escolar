@@ -23,6 +23,9 @@ function StudentLibrary({ profile, cerrarSesion }) {
   const [librosPrestados, setLibrosPrestados] =
     useState(new Set())
 
+  const [librosVisibles, setLibrosVisibles] =
+    useState(8)
+
   const [certificados, setCertificados] =
     useState({})
 
@@ -39,6 +42,10 @@ function StudentLibrary({ profile, cerrarSesion }) {
   useEffect(() => {
     cargarDatos()
   }, [profile])
+
+  useEffect(() => {
+    setLibrosVisibles(8)
+  }, [busqueda, categoria])
 
   async function cargarDatos() {
     try {
@@ -901,12 +908,22 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
   /*
    * =========================
-   * FILTRAR LIBROS
+   * MIS LECTURAS Y CATÁLOGO
    * =========================
    */
 
+  const misLecturas =
+    libros.filter((libro) =>
+      Boolean(prestamos[libro.id])
+    )
+
+  const librosDisponiblesCatalogo =
+    libros.filter((libro) =>
+      !prestamos[libro.id]
+    )
+
   const librosFiltrados =
-    libros.filter((libro) => {
+    librosDisponiblesCatalogo.filter((libro) => {
       const coincideCategoria =
         categoria === 'Todas' ||
         libro.category === categoria
@@ -940,6 +957,24 @@ function StudentLibrary({ profile, cerrarSesion }) {
         coincideBusqueda
       )
     })
+
+  const hayFiltroActivo =
+    Boolean(busqueda.trim()) ||
+    categoria !== 'Todas'
+
+  const librosMostrados =
+    hayFiltroActivo
+      ? librosFiltrados
+      : librosFiltrados.slice(
+          0,
+          librosVisibles
+        )
+
+  function mostrarMasLibros() {
+    setLibrosVisibles(
+      (actual) => actual + 4
+    )
+  }
 
   /*
    * =========================
@@ -1012,6 +1047,150 @@ function StudentLibrary({ profile, cerrarSesion }) {
           </button>
 
         </div>
+
+        {misLecturas.length > 0 && (
+          <section className="library-reading-section">
+            <div className="library-section-header">
+              <div>
+                <p className="library-label">
+                  MIS LECTURAS
+                </p>
+
+                <h2>
+                  Continúa leyendo
+                </h2>
+
+                <p className="library-reading-description">
+                  Accede rápidamente a los libros que tienes actualmente en préstamo.
+                </p>
+              </div>
+
+              <span className="library-book-count">
+                {misLecturas.length}{' '}
+                {misLecturas.length === 1
+                  ? 'libro en lectura'
+                  : 'libros en lectura'}
+              </span>
+            </div>
+
+            <div className="library-reading-grid">
+              {misLecturas.map((libro) => {
+                const prestamo =
+                  prestamos[libro.id]
+
+                const lecturaCompletada =
+                  historialLecturas[libro.id]
+
+                const progreso =
+                  lecturaCompletada &&
+                  Number(
+                    lecturaCompletada.progress_percent
+                  ) >= 100
+                    ? 100
+                    : 0
+
+                return (
+                  <article
+                    className="library-reading-card"
+                    key={libro.id}
+                  >
+                    <div className="library-reading-cover">
+                      {libro.cover_url ? (
+                        <img
+                          src={libro.cover_url}
+                          alt={`Portada de ${libro.title}`}
+                        />
+                      ) : libro.pdf_url ? (
+                        <div className="library-pdf-cover">
+                          <Document
+                            file={obtenerPdfUrl(libro.id)}
+                            loading={
+                              <div className="library-cover-placeholder">
+                                <span>📖</span>
+                                <strong>Cargando</strong>
+                                <small>Portada...</small>
+                              </div>
+                            }
+                            error={
+                              <div className="library-cover-placeholder">
+                                <span>📖</span>
+                                <strong>Biblioteca</strong>
+                                <small>Digital</small>
+                              </div>
+                            }
+                          >
+                            <Page
+                              pageNumber={1}
+                              width={180}
+                              renderTextLayer={false}
+                              renderAnnotationLayer={false}
+                            />
+                          </Document>
+                        </div>
+                      ) : (
+                        <div className="library-cover-placeholder">
+                          <span>📖</span>
+                          <strong>Biblioteca</strong>
+                          <small>Digital</small>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="library-reading-info">
+                      <span className="library-reading-badge">
+                        EN LECTURA
+                      </span>
+
+                      <h3>
+                        {libro.title}
+                      </h3>
+
+                      <p className="library-book-author">
+                        {libro.author ||
+                          'Autor no registrado'}
+                      </p>
+
+                      <p className="library-reading-due">
+                        Préstamo activo · Vence:{' '}
+                        {obtenerTextoVencimiento(
+                          prestamo.due_at
+                        )}
+                      </p>
+
+                      {progreso === 100 ? (
+                        <p className="library-reading-status">
+                          Lectura completada ·{' '}
+                          {formatearTiempo(
+                            lecturaCompletada.reading_seconds
+                          )}
+                        </p>
+                      ) : (
+                        <p className="library-reading-status">
+                          Libro disponible para continuar leyendo.
+                        </p>
+                      )}
+
+                      <button
+                        className="library-read-button"
+                        disabled={
+                          !libro.pdf_url ||
+                          loadingPrestamos
+                        }
+                        onClick={() =>
+                          abrirLector(
+                            libro.id
+                          )
+                        }
+                      >
+                        Continuar leyendo
+                      </button>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </section>
+        )}
 
         <section className="library-search-section">
 
@@ -1187,7 +1366,7 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
             <div className="library-books-grid">
 
-              {librosFiltrados.map(
+              {librosMostrados.map(
                 (libro) => {
 
                   const prestamo =
@@ -1462,6 +1641,20 @@ function StudentLibrary({ profile, cerrarSesion }) {
               )}
 
             </div>
+
+            {!hayFiltroActivo &&
+              librosVisibles <
+                librosFiltrados.length && (
+                <div className="library-load-more">
+                  <button
+                    type="button"
+                    className="library-load-more-button"
+                    onClick={mostrarMasLibros}
+                  >
+                    Ver 4 más
+                  </button>
+                </div>
+              )}
 
           )}
 

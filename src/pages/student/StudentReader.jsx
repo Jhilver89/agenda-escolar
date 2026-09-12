@@ -74,16 +74,6 @@ function StudentReader({
   const pdfContainerRef =
     useRef(null)
 
-  const isDraggingPdfRef =
-    useRef(false)
-
-  const dragStartRef =
-    useRef({
-      x: 0,
-      y: 0,
-      scrollLeft: 0,
-      scrollTop: 0,
-    })
 
   const [loanId, setLoanId] =
     useState(null)
@@ -492,150 +482,6 @@ function StudentReader({
           820 * zoom
         )
 
-  /*
-   * =========================
-   * ARRASTRAR PDF CON EL MOUSE
-   * =========================
-   */
-
-  function iniciarArrastrePdf(event) {
-    if (event.pointerType === 'mouse' && event.button !== 0) {
-      return
-    }
-
-    const contenedor =
-      pdfContainerRef.current
-
-    if (!contenedor) {
-      return
-    }
-
-    isDraggingPdfRef.current = true
-
-    dragStartRef.current = {
-      x: event.clientX,
-      y: event.clientY,
-      scrollLeft: contenedor.scrollLeft,
-      scrollTop: contenedor.scrollTop,
-    }
-
-    contenedor.classList.add(
-      'reader-pdf-dragging'
-    )
-
-    try {
-      contenedor.setPointerCapture(event.pointerId)
-    } catch {
-      // Algunos navegadores pueden no admitir captura del puntero.
-    }
-
-    event.preventDefault()
-  }
-
-  function moverPdf(event) {
-    if (!isDraggingPdfRef.current) {
-      return
-    }
-
-    const contenedor =
-      pdfContainerRef.current
-
-    if (!contenedor) {
-      return
-    }
-
-    const desplazamientoX =
-      event.clientX -
-      dragStartRef.current.x
-
-    const desplazamientoY =
-      event.clientY -
-      dragStartRef.current.y
-
-    contenedor.scrollLeft =
-      dragStartRef.current.scrollLeft -
-      desplazamientoX
-
-    contenedor.scrollTop =
-      dragStartRef.current.scrollTop -
-      desplazamientoY
-  }
-
-  function terminarArrastrePdf(event) {
-    const contenedor =
-      pdfContainerRef.current
-
-    isDraggingPdfRef.current = false
-
-    if (contenedor) {
-      contenedor.classList.remove(
-        'reader-pdf-dragging'
-      )
-
-      if (event?.pointerId !== undefined) {
-        try {
-          if (contenedor.hasPointerCapture(event.pointerId)) {
-            contenedor.releasePointerCapture(event.pointerId)
-          }
-        } catch {
-          // El puntero puede haberse liberado automáticamente.
-        }
-      }
-    }
-  }
-
-  /*
-   * =========================
-   * PDF CARGADO
-   * =========================
-   */
-
-  function onDocumentLoadSuccess({
-    numPages: totalPages,
-  }) {
-    console.log(
-      'PDF CARGADO. PÁGINAS:',
-      totalPages
-    )
-
-    setNumPages(totalPages)
-    setPdfLoading(false)
-    setPdfError('')
-
-    setPageNumber((paginaActual) =>
-      Math.min(
-        Math.max(
-          paginaActual,
-          1
-        ),
-        totalPages
-      )
-    )
-
-    lastActivityRef.current =
-      Date.now()
-
-    if (!readingCompletedRef.current) {
-      setReadingActive(true)
-    } else {
-      setReadingActive(false)
-    }
-  }
-
-  function onDocumentLoadError(err) {
-    console.error(
-      'ERROR AL CARGAR PDF:',
-      err
-    )
-
-    setPdfLoading(false)
-
-    setPdfError(
-      'No se pudo cargar el archivo PDF.'
-    )
-
-    setReadingActive(false)
-  }
 
   /*
    * =========================
@@ -1446,10 +1292,6 @@ function StudentReader({
             <div
               ref={pdfContainerRef}
               className="reader-pdf-container"
-              onPointerDown={iniciarArrastrePdf}
-              onPointerMove={moverPdf}
-              onPointerUp={terminarArrastrePdf}
-              onPointerCancel={terminarArrastrePdf}
             >
 
               {(pdfLoading ||
