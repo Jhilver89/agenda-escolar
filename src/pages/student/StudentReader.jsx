@@ -74,6 +74,17 @@ function StudentReader({
   const pdfContainerRef =
     useRef(null)
 
+  const isDraggingPdfRef =
+    useRef(false)
+
+  const dragStartRef =
+    useRef({
+      x: 0,
+      y: 0,
+      scrollLeft: 0,
+      scrollTop: 0,
+    })
+
   const [loanId, setLoanId] =
     useState(null)
 
@@ -480,6 +491,98 @@ function StudentReader({
       : Math.round(
           820 * zoom
         )
+
+  /*
+   * =========================
+   * ARRASTRAR PDF CON EL MOUSE
+   * =========================
+   */
+
+  function iniciarArrastrePdf(event) {
+    if (event.button !== 0) {
+      return
+    }
+
+    const contenedor =
+      pdfContainerRef.current
+
+    if (!contenedor) {
+      return
+    }
+
+    isDraggingPdfRef.current = true
+
+    dragStartRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      scrollLeft: contenedor.scrollLeft,
+      scrollTop: contenedor.scrollTop,
+    }
+
+    contenedor.classList.add(
+      'reader-pdf-dragging'
+    )
+
+    event.preventDefault()
+  }
+
+  function moverPdf(event) {
+    if (!isDraggingPdfRef.current) {
+      return
+    }
+
+    const contenedor =
+      pdfContainerRef.current
+
+    if (!contenedor) {
+      return
+    }
+
+    const desplazamientoX =
+      event.clientX -
+      dragStartRef.current.x
+
+    const desplazamientoY =
+      event.clientY -
+      dragStartRef.current.y
+
+    contenedor.scrollLeft =
+      dragStartRef.current.scrollLeft -
+      desplazamientoX
+
+    contenedor.scrollTop =
+      dragStartRef.current.scrollTop -
+      desplazamientoY
+
+    event.preventDefault()
+  }
+
+  function terminarArrastrePdf() {
+    const contenedor =
+      pdfContainerRef.current
+
+    isDraggingPdfRef.current = false
+
+    if (contenedor) {
+      contenedor.classList.remove(
+        'reader-pdf-dragging'
+      )
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener(
+      'mouseup',
+      terminarArrastrePdf
+    )
+
+    return () => {
+      window.removeEventListener(
+        'mouseup',
+        terminarArrastrePdf
+      )
+    }
+  }, [])
 
   /*
    * =========================
@@ -1343,6 +1446,10 @@ function StudentReader({
             <div
               ref={pdfContainerRef}
               className="reader-pdf-container"
+              onMouseDown={iniciarArrastrePdf}
+              onMouseMove={moverPdf}
+              onMouseUp={terminarArrastrePdf}
+              onMouseLeave={terminarArrastrePdf}
             >
 
               {(pdfLoading ||
