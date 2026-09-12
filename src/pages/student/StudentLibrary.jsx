@@ -497,32 +497,131 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
       /*
        * =========================
-       * CREAR PROGRESO INICIAL
+       * CREAR / RECUPERAR PROGRESO
        * =========================
+       *
+       * Si el estudiante ya terminó este libro
+       * anteriormente, no iniciamos una lectura
+       * nueva desde cero. Copiamos al nuevo préstamo
+       * el progreso histórico de la lectura completada.
+       *
+       * De esta forma:
+       * - conserva la página final;
+       * - conserva el tiempo de lectura;
+       * - conserva el 100 %;
+       * - conserva el estado "completed";
+       * - el cronómetro no vuelve a comenzar.
        */
 
+      const lecturaAnterior =
+        historialLecturas[libro.id]
+
+      const esRelecturaCompletada =
+        Boolean(
+          lecturaAnterior &&
+          Number(
+            lecturaAnterior.progress_percent
+          ) >= 100 &&
+          lecturaAnterior.status ===
+            'completed'
+        )
+
       const {
+        data: nuevoProgreso,
         error: progresoError,
       } = await supabase
         .from('library_reading_progress')
         .insert({
           loan_id: nuevoPrestamo.id,
-          current_page: 1,
+
+          current_page:
+            esRelecturaCompletada
+              ? Math.max(
+                  Number(
+                    lecturaAnterior.current_page
+                  ) || libro.pages || 1,
+                  1
+                )
+              : 1,
+
           total_pages:
-            libro.pages || 1,
-          progress_percent: 0,
-          reading_seconds: 0,
-          started_at: null,
-          last_read_at: null,
-          completed_at: null,
-          status: 'reading',
+            esRelecturaCompletada
+              ? Number(
+                  lecturaAnterior.total_pages
+                ) || libro.pages || 1
+              : libro.pages || 1,
+
+          progress_percent:
+            esRelecturaCompletada
+              ? 100
+              : 0,
+
+          reading_seconds:
+            esRelecturaCompletada
+              ? Math.max(
+                  Number(
+                    lecturaAnterior.reading_seconds
+                  ) || 0,
+                  0
+                )
+              : 0,
+
+          started_at:
+            esRelecturaCompletada
+              ? null
+              : null,
+
+          last_read_at:
+            esRelecturaCompletada
+              ? lecturaAnterior.completed_at ||
+                null
+              : null,
+
+          completed_at:
+            esRelecturaCompletada
+              ? lecturaAnterior.completed_at ||
+                new Date().toISOString()
+              : null,
+
+          status:
+            esRelecturaCompletada
+              ? 'completed'
+              : 'reading',
         })
+        .select(`
+          id,
+          loan_id,
+          current_page,
+          total_pages,
+          progress_percent,
+          reading_seconds,
+          completed_at,
+          status
+        `)
+        .single()
 
       if (progresoError) {
         console.error(
           'ERROR AL CREAR PROGRESO:',
           progresoError
         )
+      } else if (esRelecturaCompletada && nuevoProgreso) {
+        /*
+         * Actualizamos también el historial local
+         * para que la tarjeta conserve inmediatamente
+         * el tiempo y el estado de la lectura.
+         */
+        setHistorialLecturas((actual) => ({
+          ...actual,
+          [libro.id]: {
+            ...actual[libro.id],
+            ...nuevoProgreso,
+            loan_id: nuevoPrestamo.id,
+            borrowed_at:
+              nuevoPrestamo.borrowed_at,
+            returned_at: null,
+          },
+        }))
       }
 
       /*
