@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import './StudentLibrary.css'
 
 function StudentLibrary({ profile, cerrarSesion }) {
+  const navigate = useNavigate()
+
   const [libros, setLibros] = useState([])
   const [busqueda, setBusqueda] = useState('')
   const [categoria, setCategoria] = useState('Todas')
@@ -584,8 +587,9 @@ function StudentLibrary({ profile, cerrarSesion }) {
       return
     }
 
-    window.location.href =
+    navigate(
       `/estudiante/biblioteca/certificado/${certificado.id}`
+    )
   }
 
   /*
@@ -595,8 +599,9 @@ function StudentLibrary({ profile, cerrarSesion }) {
    */
 
   function abrirLector(bookId) {
-    window.location.href =
+    navigate(
       `/estudiante/biblioteca/libro/${bookId}`
+    )
   }
 
   /*
@@ -751,7 +756,7 @@ function StudentLibrary({ profile, cerrarSesion }) {
           <button
             className="library-back-button"
             onClick={() => {
-              window.location.href = '/'
+              navigate('/')
             }}
           >
             Volver al portal
