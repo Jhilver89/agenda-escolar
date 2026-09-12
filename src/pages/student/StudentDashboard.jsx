@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import './StudentDashboard.css'
 
 function StudentDashboard({ profile, cerrarSesion }) {
+  const navigate = useNavigate()
+
   const [student, setStudent] = useState(null)
 
   const [agendaStats, setAgendaStats] = useState({
@@ -253,8 +256,7 @@ function StudentDashboard({ profile, cerrarSesion }) {
           <article
             className="student-card student-card-clickable"
             onClick={() => {
-              window.location.href =
-                '/estudiante/agenda'
+              navigate('/estudiante/agenda')
             }}
           >
 
@@ -284,8 +286,7 @@ function StudentDashboard({ profile, cerrarSesion }) {
           <article
             className="student-card student-card-clickable"
             onClick={() => {
-              window.location.href =
-                '/estudiante/biblioteca'
+              navigate('/estudiante/biblioteca')
             }}
           >
 
