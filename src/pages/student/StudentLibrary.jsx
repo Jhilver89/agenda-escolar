@@ -12,6 +12,8 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
   const [studentId, setStudentId] = useState(null)
   const [prestamos, setPrestamos] = useState({})
+  const [historialLecturas, setHistorialLecturas] =
+    useState({})
   const [librosPrestados, setLibrosPrestados] =
     useState(new Set())
 
@@ -166,7 +168,9 @@ function StudentLibrary({ profile, cerrarSesion }) {
           status
         `)
         .eq('student_id', id)
-        .eq('status', 'active')
+        .order('borrowed_at', {
+          ascending: false,
+        })
 
       if (prestamosError) {
         console.error(
@@ -180,11 +184,98 @@ function StudentLibrary({ profile, cerrarSesion }) {
       const prestamosMap = {}
 
       for (const prestamo of data || []) {
-        prestamosMap[prestamo.book_id] =
-          prestamo
+        if (
+          prestamo.status === 'active' &&
+          !prestamosMap[prestamo.book_id]
+        ) {
+          prestamosMap[prestamo.book_id] =
+            prestamo
+        }
       }
 
       setPrestamos(prestamosMap)
+
+      const loanIds = (data || []).map(
+        (prestamo) => prestamo.id
+      )
+
+      if (loanIds.length === 0) {
+        setHistorialLecturas({})
+        return
+      }
+
+      const {
+        data: progresos,
+        error: progresosError,
+      } = await supabase
+        .from('library_reading_progress')
+        .select(`
+          loan_id,
+          current_page,
+          total_pages,
+          progress_percent,
+          reading_seconds,
+          completed_at,
+          status,
+          updated_at
+        `)
+        .in('loan_id', loanIds)
+
+      if (progresosError) {
+        console.error(
+          'ERROR AL CARGAR HISTORIAL DE LECTURAS:',
+          progresosError
+        )
+
+        setHistorialLecturas({})
+        return
+      }
+
+      const historialMap = {}
+
+      for (const prestamo of data || []) {
+        const progreso = (progresos || []).find(
+          (item) =>
+            item.loan_id === prestamo.id &&
+            item.status === 'completed' &&
+            Number(item.progress_percent) >= 100
+        )
+
+        if (!progreso) {
+          continue
+        }
+
+        if (
+          !historialMap[prestamo.book_id] ||
+          new Date(
+            progreso.completed_at ||
+              progreso.updated_at ||
+              prestamo.borrowed_at
+          ) >
+            new Date(
+              historialMap[
+                prestamo.book_id
+              ].completed_at ||
+                historialMap[
+                  prestamo.book_id
+                ].updated_at ||
+                historialMap[
+                  prestamo.book_id
+                ].borrowed_at
+            )
+        ) {
+          historialMap[prestamo.book_id] = {
+            ...progreso,
+            loan_id: prestamo.id,
+            borrowed_at:
+              prestamo.borrowed_at,
+            returned_at:
+              prestamo.returned_at,
+          }
+        }
+      }
+
+      setHistorialLecturas(historialMap)
     } finally {
       setLoadingPrestamos(false)
     }
@@ -606,6 +697,49 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
   /*
    * =========================
+   * FORMATO DEL TIEMPO
+   * =========================
+   */
+
+  function formatearTiempo(
+    segundos
+  ) {
+    const total =
+      Math.max(
+        0,
+        Math.floor(
+          Number(segundos) || 0
+        )
+      )
+
+    const horas =
+      Math.floor(total / 3600)
+
+    const minutos =
+      Math.floor(
+        (total % 3600) / 60
+      )
+
+    const segundosRestantes =
+      total % 60
+
+    if (horas > 0) {
+      return `${horas} h ${String(
+        minutos
+      ).padStart(2, '0')} min`
+    }
+
+    if (minutos > 0) {
+      return `${minutos} min ${String(
+        segundosRestantes
+      ).padStart(2, '0')} s`
+    }
+
+    return `${segundosRestantes} s`
+  }
+
+  /*
+   * =========================
    * FORMATO DE VENCIMIENTO
    * =========================
    */
@@ -970,6 +1104,16 @@ function StudentLibrary({ profile, cerrarSesion }) {
                       certificado
                     )
 
+                  const lecturaCompletada =
+                    historialLecturas[
+                      libro.id
+                    ]
+
+                  const tieneLecturaCompletada =
+                    Boolean(
+                      lecturaCompletada
+                    )
+
                   const prestando =
                     prestandoId ===
                     libro.id
@@ -1055,10 +1199,17 @@ function StudentLibrary({ profile, cerrarSesion }) {
 
                         )}
 
-                        {tieneCertificado && (
+                        {tieneLecturaCompletada && (
 
                           <p className="library-book-pages">
-                            Lectura completada · Certificado emitido
+                            Lectura completada · Tiempo:{' '}
+                            {formatearTiempo(
+                              lecturaCompletada.reading_seconds
+                            )}
+                            {' · '}
+                            {tieneCertificado
+                              ? 'Certificado emitido'
+                              : 'Estado: Terminado'}
                           </p>
 
                         )}
